@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Iniciar sesión | Vocation Quest</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}"
+    >
+</head>
+
+
+<body>
+
+    <main class="registro-page">
+
+        <!-- Logo -->
+        <header class="logo">
+            <span class="logo-icon">✦</span>
+            <span>Vocation Quest</span>
+        </header>
+
+
+        <section class="registro-container">
+
+            <!-- Parte izquierda -->
+            <div class="avatar-section">
+
+                <div class="avatar">
+                    🐾
+                </div>
+
+                <h2>¡Hola de nuevo! 👋</h2>
+
+                <p>
+                    Continúa tu aventura y descubre
+                    nuevos caminos para tu futuro.
+                </p>
+
+                <div class="decoracion decoracion-1"></div>
+                <div class="decoracion decoracion-2"></div>
+
+            </div>
+
+
+            <!-- Formulario -->
+            <div class="registro-card">
+
+                <div class="titulo">
+
+                    <p class="etiqueta">
+                        CONTINÚA TU AVENTURA
+                    </p>
+
+                    <h1>Iniciar sesión</h1>
+
+                    <p>
+                        Ingresa tus datos para continuar
+                        tu aventura en Vocation Quest.
+                    </p>
+
+                </div>
+
+
+                <form action="/login" method="POST">
+
+                    <!-- CORREO -->
+                    <div class="campo">
+
+                        <div class="campo-titulo">
+
+                            <label for="correo">
+                                Correo electrónico
+                            </label>
+
+                            <span class="ayuda">
+                                ?
+
+                                <span class="ayuda-texto">
+                                    Escribe el correo con el que
+                                    creaste tu cuenta.
+                                </span>
+
+                            </span>
+
+                        </div>
+
+
+                        <input
+                            type="email"
+                            id="correo"
+                            name="correo"
+                            placeholder="ejemplo@correo.com"
+                            required
+                        >
+
+                    </div>
+
+
+                    <!-- CONTRASEÑA -->
+                    <div class="campo">
+
+                        <div class="campo-titulo">
+
+                            <label for="contrasena">
+                                Contraseña
+                            </label>
+
+                            <span class="ayuda">
+                                ?
+
+                                <span class="ayuda-texto">
+                                    Escribe la contraseña que
+                                    utilizaste al crear tu cuenta.
+                                </span>
+
+                            </span>
+
+                        </div>
+
+
+                        <input
+                            type="password"
+                            id="contrasena"
+                            name="contrasena"
+                            placeholder="Escribe tu contraseña"
+                            required
+                        >
+
+                    </div>
+
+
+                    <!-- BOTÓN -->
+                    <button
+                        type="submit"
+                        class="btn-registrar"
+                    >
+                        Iniciar sesión
+                        <span>→</span>
+                    </button>
+
+
+                </form>
+
+
+                <!-- REGISTRO -->
+                <div class="login-link">
+
+                    <span>
+                        ¿No tienes una cuenta?
+                    </span>
+
+                    <a href="/registro">
+                        Crear cuenta
+                    </a>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</body>
+
+</html>
