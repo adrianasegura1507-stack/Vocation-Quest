@@ -1,5 +1,10 @@
+<<<<<<< HEAD
 from flask import Blueprint, render_template, request, redirect, url_for, session
 from werkzeug.security import generate_password_hash, check_password_hash
+=======
+from flask import Blueprint, render_template, request
+from werkzeug.security import generate_password_hash
+>>>>>>> origin/main
 from database import obtener_conexion
 
 auth = Blueprint("auth", __name__)
@@ -62,6 +67,7 @@ def registro():
             cursor.close()
             conexion.close()
 
+<<<<<<< HEAD
     return render_template("registro.html")
 
 @auth.route("/login", methods=["GET", "POST"])
@@ -108,3 +114,6 @@ def login():
             conexion.close()
 
     return render_template("login.html")
+=======
+    return render_template("registro.html")
+>>>>>>> origin/main
