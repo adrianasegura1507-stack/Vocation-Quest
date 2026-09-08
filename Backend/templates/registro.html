@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Crear cuenta | Vocation Quest</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+    <main class="registro-page">
+
+        <!-- Logo / nombre -->
+        <header class="logo">
+            <span class="logo-icon">✦</span>
+            <span>Vocation Quest</span>
+        </header>
+
+
+        <section class="registro-container">
+
+            <!-- Parte del avatar -->
+            <div class="avatar-section">
+
+                <div class="avatar">
+                    🐾
+                </div>
+
+                <h2>¡Hola! 👋</h2>
+
+                <p>
+                    Estoy aquí para acompañarte
+                    en tu aventura vocacional.
+                </p>
+
+                <div class="decoracion decoracion-1"></div>
+                <div class="decoracion decoracion-2"></div>
+
+            </div>
+
+
+            <!-- Formulario -->
+            <div class="registro-card">
+
+                <div class="titulo">
+
+                    <p class="etiqueta">COMIENZA TU AVENTURA</p>
+
+                    <h1>Crear cuenta</h1>
+
+                    <p>
+                        Regístrate para descubrir qué caminos
+                        profesionales podrían ser para ti.
+                    </p>
+
+                </div>
+
+
+                <form action="/registro" method="POST">
+
+
+                    <!-- NOMBRE -->
+                    <div class="campo">
+
+                        <div class="campo-titulo">
+
+                            <label for="nombre">
+                                Nombre
+                            </label>
+
+                            <span class="ayuda">
+
+                                ?
+
+                                <span class="ayuda-texto">
+                                    Escribe tu nombre. Utiliza
+                                    únicamente letras y espacios.
+                                </span>
+
+                            </span>
+
+                        </div>
+
+                        <input
+                            type="text"
+                            id="nombre"
+                            name="nombre"
+                            placeholder="Escribe tu nombre"
+                            required
+                            minlength="2"
+                            maxlength="100"
+                            pattern="[A-Za-zÁÉÍÓÚáéíóúÑñÜü ]+"
+                            title="El nombre solo debe contener letras y espacios."
+                        >
+
+                    </div>
+
+
+                    <!-- CORREO -->
+                    <div class="campo">
+
+                        <div class="campo-titulo">
+
+                            <label for="correo">
+                                Correo electrónico
+                            </label>
+
+                            <span class="ayuda">
+
+                                ?
+
+                                <span class="ayuda-texto">
+                                    Utiliza un correo válido. Lo
+                                    necesitarás para iniciar sesión.
+                                </span>
+
+                            </span>
+
+                        </div>
+
+                        <input
+                            type="email"
+                            id="correo"
+                            name="correo"
+                            placeholder="ejemplo@correo.com"
+                            required
+                            maxlength="150"
+                        >
+
+                    </div>
+
+
+                    <!-- CONTRASEÑA -->
+                    <div class="campo">
+
+                        <div class="campo-titulo">
+
+                            <label for="contrasena">
+                                Contraseña
+                            </label>
+
+                            <span class="ayuda">
+
+                                ?
+
+                                <span class="ayuda-texto">
+                                    Tu contraseña debe tener
+                                    mínimo 8 caracteres.
+                                </span>
+
+                            </span>
+
+                        </div>
+
+                        <input
+                            type="password"
+                            id="contrasena"
+                            name="contrasena"
+                            placeholder="Crea una contraseña"
+                            required
+                            minlength="8"
+                            maxlength="255"
+                        >
+
+                    </div>
+
+
+                    <!-- EDAD -->
+                    <div class="campo">
+
+                        <div class="campo-titulo">
+
+                            <label for="edad">
+                                Edad
+                            </label>
+
+                            <span class="ayuda">
+
+                                ?
+
+                                <span class="ayuda-texto">
+                                    Indica tu edad actual.
+                                </span>
+
+                            </span>
+
+                        </div>
+
+                        <input
+                            type="number"
+                            id="edad"
+                            name="edad"
+                            placeholder="Ej. 16"
+                            required
+                            min="13"
+                            max="100"
+                        >
+
+                    </div>
+
+
+                    <!-- GRADO -->
+                    <div class="campo">
+
+                        <div class="campo-titulo">
+
+                            <label for="grado">
+                                Grado
+                            </label>
+
+                            <span class="ayuda">
+
+                                ?
+
+                                <span class="ayuda-texto">
+                                    Selecciona el grado que estás
+                                    cursando actualmente.
+                                </span>
+
+                            </span>
+
+                        </div>
+
+
+                        <select
+                            id="grado"
+                            name="grado"
+                            required
+                        >
+
+                            <option value="" disabled selected>
+                                Selecciona tu grado
+                            </option>
+
+                            <option value="10">
+                                10°
+                            </option>
+
+                            <option value="11">
+                                11°
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- BOTÓN -->
+                    <button
+                        type="submit"
+                        class="btn-registrar"
+                    >
+                        Crear mi cuenta
+                        <span>→</span>
+                    </button>
+
+
+                </form>
+
+
+                <!-- LOGIN -->
+                <div class="login-link">
+
+                    <span>
+                        ¿Ya tienes una cuenta?
+                    </span>
+
+                    <a href="/login">
+                        Inicia sesión
+                    </a>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</body>
+
+</html>
