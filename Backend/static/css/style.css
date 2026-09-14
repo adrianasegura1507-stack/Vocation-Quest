@@ -491,3 +491,236 @@ input::placeholder {
     }
 
 }
+/* =========================================
+   PRUEBA VOCACIONAL
+   ========================================= */
+
+.prueba-page {
+    min-height: 100vh;
+    padding: 30px 20px 60px;
+    background: #f8f6ff;
+}
+
+.prueba-container {
+    width: 100%;
+    max-width: 900px;
+    margin: 30px auto 0;
+}
+
+.prueba-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.prueba-header .etiqueta {
+    display: inline-block;
+    margin-bottom: 10px;
+    font-size: 13px;
+    font-weight: bold;
+    letter-spacing: 1.5px;
+    color: #7b61ff;
+}
+
+.prueba-header h1 {
+    margin: 5px 0 10px;
+    font-size: 36px;
+    color: #292343;
+}
+
+.prueba-header p {
+    margin: 0;
+    color: #777;
+    font-size: 16px;
+}
+
+
+/* PROGRESO */
+
+.progreso-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #4d456d;
+}
+
+.barra-progreso {
+    width: 100%;
+    height: 12px;
+    background: #e8e3f5;
+    border-radius: 20px;
+    overflow: hidden;
+    margin-bottom: 30px;
+}
+
+.barra-progreso-relleno {
+    height: 100%;
+    background: #7b61ff;
+    border-radius: 20px;
+    transition: width 0.3s ease;
+}
+
+
+/* TARJETA DE PREGUNTA */
+
+.pregunta-card {
+    background: white;
+    border-radius: 24px;
+    padding: 40px;
+    box-shadow: 0 12px 35px rgba(70, 55, 120, 0.12);
+}
+
+.pregunta-card h2 {
+    margin: 0 0 30px;
+    color: #292343;
+    font-size: 25px;
+    line-height: 1.4;
+}
+
+
+/* OPCIONES */
+
+.opciones {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.opcion {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 18px 20px;
+    border: 2px solid #e9e5f5;
+    border-radius: 16px;
+    cursor: pointer;
+    transition: 0.2s;
+    background: #fff;
+}
+
+.opcion:hover {
+    border-color: #7b61ff;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(123, 97, 255, 0.12);
+}
+
+.opcion input {
+    display: none;
+}
+
+.opcion:has(input:checked) {
+    border-color: #7b61ff;
+    background: #f2efff;
+}
+
+.letra {
+    min-width: 38px;
+    height: 38px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    background: #eeeafd;
+    color: #6b52d9;
+    font-weight: bold;
+}
+
+.texto-opcion {
+    color: #403b55;
+    font-size: 16px;
+    line-height: 1.4;
+}
+
+
+/* BOTONES */
+
+.botones-prueba {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 35px;
+    gap: 15px;
+}
+
+.btn-siguiente,
+.btn-anterior {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 14px 24px;
+    border-radius: 12px;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 15px;
+    cursor: pointer;
+}
+
+.btn-siguiente {
+    border: none;
+    background: #7b61ff;
+    color: white;
+}
+
+.btn-siguiente:hover {
+    background: #684de5;
+}
+
+.btn-anterior {
+    background: #eeeafd;
+    color: #5d4ca0;
+}
+
+.btn-anterior:hover {
+    background: #e1dcf7;
+}
+
+
+/* PANTALLA FINAL */
+
+.pregunta-card h1 {
+    color: #292343;
+    margin-bottom: 15px;
+}
+
+.pregunta-card p {
+    color: #777;
+    line-height: 1.6;
+}
+
+
+/* RESPONSIVE */
+
+@media (max-width: 600px) {
+
+    .prueba-page {
+        padding: 20px 12px 40px;
+    }
+
+    .prueba-header h1 {
+        font-size: 28px;
+    }
+
+    .pregunta-card {
+        padding: 25px 20px;
+    }
+
+    .pregunta-card h2 {
+        font-size: 21px;
+    }
+
+    .opcion {
+        padding: 15px;
+    }
+
+    .botones-prueba {
+        flex-direction: column-reverse;
+        align-items: stretch;
+    }
+
+    .btn-siguiente,
+    .btn-anterior {
+        width: 100%;
+        box-sizing: border-box;
+    }
+}

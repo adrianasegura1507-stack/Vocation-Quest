@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{{ prueba.nombre }} | Vocation Quest</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+    <main class="prueba-page">
+
+        <header class="logo">
+            <span class="logo-icon">✦</span>
+            <span>Vocation Quest</span>
+        </header>
+
+        <section class="prueba-container">
+
+            <div class="prueba-header">
+
+                <p class="etiqueta">
+                    NIVEL {{ prueba.numero_nivel }}
+                </p>
+
+                <h1>
+                    {{ prueba.nombre }}
+                </h1>
+
+                <p>
+                    {{ prueba.descripcion }}
+                </p>
+
+            </div>
+
+
+            <!-- Progreso -->
+
+            <div class="progreso-info">
+
+                <span>
+                    Pregunta {{ numero }} de {{ total }}
+                </span>
+
+                <span>
+                    {{ ((numero / total) * 100)|round|int }}%
+                </span>
+
+            </div>
+
+
+            <div class="barra-progreso">
+
+                <div
+                    class="barra-progreso-relleno"
+                    style="width: {{ (numero / total) * 100 }}%;">
+                </div>
+
+            </div>
+
+
+            <!-- Pregunta -->
+
+            <div class="pregunta-card">
+
+                <h2>
+                    {{ pregunta.pregunta }}
+                </h2>
+
+
+                <form method="POST">
+
+                    <div class="opciones">
+
+                        {% for opcion in opciones %}
+
+                        <label class="opcion">
+
+                            <input
+                                type="radio"
+                                name="opcion"
+                                value="{{ opcion.id_opcion }}"
+                                required
+                            >
+
+                            <span class="letra">
+                                {{ "ABCD"[loop.index0] }}
+                            </span>
+
+                            <span class="texto-opcion">
+                                {{ opcion.texto }}
+                            </span>
+
+                        </label>
+
+                        {% endfor %}
+
+                    </div>
+
+
+                    <div class="botones-prueba">
+
+                        {% if numero > 1 %}
+
+                        <a
+                            href="{{ url_for(
+                                'pruebas.realizar_prueba',
+                                id_prueba=prueba.id_prueba,
+                                pregunta=numero-1
+                            ) }}"
+                            class="btn-anterior"
+                        >
+                            ← Anterior
+                        </a>
+
+                        {% endif %}
+
+
+                        <button
+                            type="submit"
+                            class="btn-siguiente"
+                        >
+
+                            {% if numero == total %}
+                                Finalizar prueba
+                            {% else %}
+                                Siguiente →
+                            {% endif %}
+
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</body>
+</html>

@@ -101,7 +101,7 @@ def login():
             session["nombre"] = usuario["nombre"]
             session["rol"] = usuario["rol"]
 
-            return redirect(url_for("inicio"))
+            return redirect(url_for("pruebas.realizar_prueba", id_prueba=1))
 
         finally:
 
