@@ -1,0 +1,225 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi espacio - Vocation Quest</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f7f7fb;
+            color: #29213d;
+        }
+
+        header {
+            background: linear-gradient(135deg, #542b82, #7544a8);
+            color: white;
+            padding: 25px 8%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        header h1 {
+            font-size: 27px;
+        }
+
+        .logout {
+            background-color: #8ed6a5;
+            color: #21452d;
+            padding: 10px 17px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .container {
+            width: 84%;
+            max-width: 1100px;
+            margin: 35px auto;
+        }
+
+        .welcome {
+            background-color: white;
+            padding: 30px;
+            border-radius: 18px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+        }
+
+        .welcome h2 {
+            color: #542b82;
+            margin-bottom: 12px;
+        }
+
+        .welcome p {
+            line-height: 1.6;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .card {
+            background-color: white;
+            padding: 25px;
+            border-radius: 16px;
+            border-top: 5px solid #8ed6a5;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+        }
+
+        .card h3 {
+            color: #542b82;
+            margin-bottom: 12px;
+        }
+
+        .number {
+            font-size: 32px;
+            font-weight: bold;
+            color: #542b82;
+            margin-bottom: 8px;
+        }
+
+        .test-section {
+            background-color: #eee5f8;
+            padding: 30px;
+            border-radius: 18px;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .test-section h2 {
+            color: #542b82;
+            margin-bottom: 12px;
+        }
+
+        .test-section p {
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+
+        .button {
+            display: inline-block;
+            background-color: #542b82;
+            color: white;
+            padding: 14px 24px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .button:hover {
+            background-color: #3f1f62;
+        }
+
+        .help {
+            background-color: white;
+            padding: 25px;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+        }
+
+        .help h2 {
+            color: #542b82;
+            margin-bottom: 12px;
+        }
+
+        .help p {
+            line-height: 1.6;
+        }
+
+        footer {
+            background-color: #542b82;
+            color: white;
+            text-align: center;
+            padding: 22px;
+            margin-top: 35px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h1>Vocation Quest</h1>
+        <a href="/logout" class="logout">Cerrar sesión</a>
+    </header>
+
+    <main class="container">
+
+        <section class="welcome">
+            <h2>¡Hola, {{ session.get("nombre", "estudiante") }}! 👋</h2>
+
+            <p>
+                Bienvenido a tu espacio personal de Vocation Quest.
+                Desde aquí podrás realizar tus pruebas vocacionales,
+                conocer tus resultados y explorar diferentes opciones
+                para tu futuro académico.
+            </p>
+        </section>
+
+        <section class="cards">
+
+            <div class="card">
+                <h3>Mis puntos</h3>
+                <div class="number">0</div>
+                <p>Estos puntos aumentarán cuando completes actividades.</p>
+            </div>
+
+            <div class="card">
+                <h3>Mi progreso</h3>
+                <div class="number">0%</div>
+                <p>Completa las pruebas para avanzar en tu proceso.</p>
+            </div>
+
+            <div class="card">
+                <h3>Mis logros</h3>
+                <div class="number">0</div>
+                <p>Obtén reconocimientos al completar diferentes actividades.</p>
+            </div>
+
+        </section>
+
+        <section class="test-section">
+            <h2>¿Listo para comenzar?</h2>
+
+            <p>
+                Responde las preguntas de la prueba vocacional para conocer
+                las áreas que más se relacionan con tus intereses.
+            </p>
+
+            <a href="/prueba" class="button">Comenzar prueba</a>
+        </section>
+
+        <section class="help">
+            <h2>¿Qué podrás hacer aquí?</h2>
+
+            <p>
+                En este espacio podrás avanzar por diferentes niveles,
+                revisar tus resultados, explorar carreras y conocer
+                programas técnicos, tecnológicos, universitarios y cursos
+                relacionados con tus intereses.
+            </p>
+        </section>
+
+    </main>
+
+    <footer>
+        <p>Vocation Quest - Explora tus intereses y construye tu futuro.</p>
+    </footer>
+
+</body>
+</html>
