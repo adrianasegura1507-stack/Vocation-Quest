@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, render_template
 from routes.auth import auth
 from routes.pruebas import pruebas
 
@@ -12,7 +12,11 @@ app.register_blueprint(pruebas)
 
 @app.route("/")
 def inicio():
-    return "Vocation Quest funcionando"
+    return render_template("index.html")
+
+@app.route("/inicio-estudiante")
+def inicio_estudiante():
+    return render_template("inicio_estudiante.html")
 
 
 if __name__ == "__main__":

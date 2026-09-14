@@ -1,3 +1,4 @@
+
 from flask import Blueprint, render_template, request, redirect, url_for, session
 from werkzeug.security import generate_password_hash, check_password_hash
 from database import obtener_conexion
@@ -52,7 +53,13 @@ def registro():
 
             conexion.commit()
 
-            return "Registro exitoso"
+            # Iniciar sesión automáticamente después del registro
+            session["id_usuario"] = id_usuario
+            session["nombre"] = nombre
+            session["rol"] = "estudiante"
+
+            # Enviar al estudiante a su página personal
+            return redirect(url_for("inicio_estudiante"))
 
         except Exception as error:
             conexion.rollback()
@@ -101,7 +108,8 @@ def login():
             session["nombre"] = usuario["nombre"]
             session["rol"] = usuario["rol"]
 
-            return redirect(url_for("pruebas.realizar_prueba", id_prueba=1))
+# Enviar al estudiante a su página personal
+            return redirect(url_for("inicio_estudiante"))
 
         finally:
 
@@ -109,3 +117,12 @@ def login():
             conexion.close()
 
     return render_template("login.html")
+
+
+@auth.route("/logout")
+def logout():
+    """
+    Cierra la sesión del usuario y vuelve a la página principal.
+    """
+    session.clear()
+    return redirect(url_for("inicio")) 
