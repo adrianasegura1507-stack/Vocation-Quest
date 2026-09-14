@@ -1,0 +1,380 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vocation Quest</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f7f7fb;
+            color: #29213d;
+        }
+
+        header {
+            background: linear-gradient(135deg, #542b82, #7544a8);
+            color: white;
+            padding: 25px 8%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        header h1 {
+            font-size: 28px;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin-left: 18px;
+            font-weight: bold;
+        }
+
+        .hero {
+            padding: 65px 8%;
+            background: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 35px;
+            flex-wrap: wrap;
+        }
+
+        .hero-text {
+            max-width: 600px;
+        }
+
+        .hero h2 {
+            color: #542b82;
+            font-size: 38px;
+            margin-bottom: 18px;
+        }
+
+        .hero p {
+            font-size: 18px;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        .button {
+            display: inline-block;
+            background-color: #8ed6a5;
+            color: #1f4930;
+            padding: 14px 25px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .button:hover {
+            background-color: #72c58e;
+            transform: translateY(-3px);
+        }
+
+        .hero-card {
+            background-color: #eee5f8;
+            padding: 30px;
+            border-radius: 20px;
+            max-width: 330px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        .hero-card h3 {
+            color: #542b82;
+            margin-bottom: 12px;
+        }
+
+        section {
+            padding: 45px 8%;
+        }
+
+        section h2 {
+            text-align: center;
+            color: #542b82;
+            margin-bottom: 30px;
+            font-size: 30px;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 22px;
+        }
+
+        .card {
+            background-color: white;
+            padding: 25px;
+            border-radius: 16px;
+            border-top: 5px solid #8ed6a5;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+            transition: 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-6px);
+        }
+
+        .card h3 {
+            color: #542b82;
+            margin-bottom: 12px;
+        }
+
+        .card p {
+            line-height: 1.5;
+        }
+
+        .steps .card {
+            text-align: center;
+        }
+
+        .number {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            width: 45px;
+            height: 45px;
+            background-color: #542b82;
+            color: white;
+            border-radius: 50%;
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        details {
+            background-color: white;
+            margin: 12px auto;
+            padding: 18px;
+            border-radius: 12px;
+            max-width: 850px;
+            cursor: pointer;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        summary {
+            color: #542b82;
+            font-weight: bold;
+        }
+
+        details p {
+            margin-top: 12px;
+            line-height: 1.5;
+        }
+
+        footer {
+            background-color: #542b82;
+            color: white;
+            text-align: center;
+            padding: 25px;
+            margin-top: 20px;
+        }
+
+        @media (max-width: 600px) {
+            .hero h2 {
+                font-size: 30px;
+            }
+
+            nav a {
+                margin-left: 8px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h1>Vocation Quest</h1>
+
+        <nav>
+            <a href="/login">Iniciar sesión</a>
+            <a href="/registro">Registrarse</a>
+        </nav>
+    </header>
+
+    <main>
+
+        <section class="hero">
+            <div class="hero-text">
+                <h2>Descubre tu camino vocacional</h2>
+
+                <p>
+                    Vocation Quest es una aplicación de orientación vocacional
+                    que te ayuda a conocer tus intereses, descubrir tus habilidades
+                    y explorar diferentes opciones para tu futuro académico.
+                </p>
+
+                <a href="/registro" class="button">Comenzar mi aventura</a>
+            </div>
+
+            <div class="hero-card">
+                <h3>¿Qué encontrarás?</h3>
+                <p>
+                    Pruebas interactivas, resultados personalizados,
+                    carreras, instituciones, programas de estudio,
+                    puntos y logros.
+                </p>
+            </div>
+        </section>
+
+        <section>
+            <h2>¿Para qué sirve Vocation Quest?</h2>
+
+            <div class="cards">
+                <div class="card">
+                    <h3>Conoce tus intereses</h3>
+                    <p>
+                        Responde diferentes preguntas para identificar
+                        las áreas que más se relacionan contigo.
+                    </p>
+                </div>
+
+                <div class="card">
+                    <h3>Descubre tu perfil</h3>
+                    <p>
+                        Al terminar las pruebas, podrás conocer las áreas
+                        vocacionales que tienen mayor relación con tus respuestas.
+                    </p>
+                </div>
+
+                <div class="card">
+                    <h3>Explora opciones</h3>
+                    <p>
+                        Consulta carreras, instituciones, programas académicos
+                        y cursos relacionados con tus resultados.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section class="steps">
+            <h2>¿Cómo funciona?</h2>
+
+            <div class="cards">
+                <div class="card">
+                    <div class="number">1</div>
+                    <h3>Responde</h3>
+                    <p>
+                        Completa las preguntas de las pruebas vocacionales
+                        de manera sencilla e interactiva.
+                    </p>
+                </div>
+
+                <div class="card">
+                    <div class="number">2</div>
+                    <h3>Descubre</h3>
+                    <p>
+                        Revisa las áreas vocacionales que más se relacionan
+                        con tus intereses y respuestas.
+                    </p>
+                </div>
+
+                <div class="card">
+                    <div class="number">3</div>
+                    <h3>Explora</h3>
+                    <p>
+                        Conoce carreras, instituciones, programas y cursos
+                        que pueden servirte como guía para tu futuro.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>¿Qué puedes lograr después de las pruebas?</h2>
+
+            <div class="cards">
+                <div class="card">
+                    <h3>Identificar tus áreas de interés</h3>
+                    <p>
+                        Reconocer si tienes mayor afinidad con tecnología,
+                        salud, arte, administración, educación, ciencias
+                        sociales o ciencias.
+                    </p>
+                </div>
+
+                <div class="card">
+                    <h3>Conocer posibles carreras</h3>
+                    <p>
+                        Obtener ideas de carreras relacionadas con las áreas
+                        que aparecen en tus resultados.
+                    </p>
+                </div>
+
+                <div class="card">
+                    <h3>Explorar programas y cursos</h3>
+                    <p>
+                        Encontrar opciones universitarias, técnicas,
+                        tecnológicas y cursos de formación.
+                    </p>
+                </div>
+
+                <div class="card">
+                    <h3>Avanzar y ganar logros</h3>
+                    <p>
+                        Participar en una experiencia con puntos, progreso
+                        y reconocimientos por completar actividades.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>Preguntas frecuentes</h2>
+
+            <details>
+                <summary>¿Vocation Quest decide qué debo estudiar?</summary>
+                <p>
+                    No. La aplicación funciona como una herramienta de orientación.
+                    Sus resultados son una guía para ayudarte a explorar diferentes
+                    opciones, pero la decisión final es personal.
+                </p>
+            </details>
+
+            <details>
+                <summary>¿Tengo que responder una sola prueba?</summary>
+                <p>
+                    La aplicación puede contar con diferentes pruebas y niveles
+                    para conocer mejor tus intereses y preferencias.
+                </p>
+            </details>
+
+            <details>
+                <summary>¿Qué recibiré al terminar?</summary>
+                <p>
+                    Podrás consultar un resultado relacionado con tus áreas
+                    vocacionales y explorar carreras, instituciones, programas
+                    y cursos relacionados.
+                </p>
+            </details>
+
+            <details>
+                <summary>¿Necesito pagar para utilizar la aplicación?</summary>
+                <p>
+                    Vocation Quest está planteada como una alternativa gratuita
+                    de orientación vocacional.
+                </p>
+            </details>
+        </section>
+
+    </main>
+
+    <footer>
+        <p>Vocation Quest - Explora tus intereses y construye tu futuro.</p>
+    </footer>
+
+</body>
+</html>
