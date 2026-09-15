@@ -724,3 +724,327 @@ input::placeholder {
         box-sizing: border-box;
     }
 }
+/* =========================================
+   PRESENTACIÓN DE NIVELES
+   ========================================= */
+
+.presentacion-page {
+    min-height: 100vh;
+    padding: 30px 20px 40px;
+    background: linear-gradient(135deg, #f8f6ff 0%, #eee9ff 100%);
+}
+
+
+/* LOGO */
+
+.presentacion-logo {
+    width: 100%;
+    max-width: 1100px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+
+    color: #542b82;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.presentacion-logo .logo-icon {
+    width: 42px;
+    height: 42px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: #542b82;
+    color: white;
+
+    font-size: 21px;
+}
+
+
+/* CONTENEDOR */
+
+.presentacion-container {
+    width: 100%;
+    max-width: 900px;
+
+    margin: 35px auto 0;
+}
+
+
+/* TARJETA */
+
+.presentacion-card {
+    background: white;
+
+    border-radius: 28px;
+
+    padding: 50px 60px;
+
+    box-shadow:
+        0 15px 45px rgba(70, 55, 120, 0.14);
+
+    text-align: center;
+}
+
+
+/* NIVEL */
+
+.nivel-badge {
+    display: inline-block;
+
+    padding: 8px 18px;
+
+    border-radius: 30px;
+
+    background: #eeeafd;
+    color: #6b52d9;
+
+    font-size: 13px;
+    font-weight: bold;
+
+    letter-spacing: 1.5px;
+
+    margin-bottom: 18px;
+}
+
+
+/* TITULO */
+
+.presentacion-card h1 {
+    margin: 0 0 15px;
+
+    color: #292343;
+
+    font-size: 42px;
+
+    line-height: 1.2;
+}
+
+
+/* SUBTITULO */
+
+.presentacion-subtitulo {
+    max-width: 700px;
+
+    margin: 0 auto;
+
+    color: #6d687d;
+
+    font-size: 18px;
+
+    line-height: 1.6;
+}
+
+
+/* LINEA */
+
+.presentacion-linea {
+    width: 80px;
+    height: 4px;
+
+    margin: 30px auto;
+
+    border-radius: 10px;
+
+    background: #7b61ff;
+}
+
+
+/* TEXTO */
+
+.presentacion-texto {
+    max-width: 760px;
+
+    margin: 0 auto;
+
+    text-align: left;
+}
+
+.presentacion-texto p {
+    margin: 0 0 18px;
+
+    color: #4c485b;
+
+    font-size: 16px;
+
+    line-height: 1.8;
+}
+
+.presentacion-texto p:last-child {
+    margin-bottom: 0;
+}
+
+
+/* MENSAJE */
+
+.presentacion-mensaje {
+    display: flex;
+
+    align-items: center;
+
+    gap: 15px;
+
+    margin-top: 35px;
+
+    padding: 20px 22px;
+
+    border-radius: 16px;
+
+    background: #f5f2ff;
+
+    text-align: left;
+}
+
+.mensaje-icono {
+    font-size: 30px;
+
+    flex-shrink: 0;
+}
+
+.presentacion-mensaje p {
+    margin: 0;
+
+    color: #514873;
+
+    font-size: 15px;
+
+    font-weight: bold;
+
+    line-height: 1.5;
+}
+
+
+/* BOTÓN */
+
+.presentacion-boton-container {
+    margin-top: 35px;
+}
+
+.btn-comenzar {
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 12px;
+
+    padding: 16px 30px;
+
+    border-radius: 14px;
+
+    background: #542b82;
+
+    color: white;
+
+    text-decoration: none;
+
+    font-size: 16px;
+
+    font-weight: bold;
+
+    box-shadow:
+        0 8px 20px rgba(84, 43, 130, 0.22);
+
+    transition:
+        transform 0.2s ease,
+        background 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.btn-comenzar span {
+    font-size: 20px;
+
+    transition: transform 0.2s ease;
+}
+
+.btn-comenzar:hover {
+    background: #3f1f62;
+
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 12px 25px rgba(84, 43, 130, 0.28);
+}
+
+.btn-comenzar:hover span {
+    transform: translateX(4px);
+}
+
+
+/* FOOTER */
+
+.presentacion-footer {
+    margin-top: 30px;
+
+    text-align: center;
+
+    color: #77718a;
+
+    font-size: 13px;
+}
+
+.presentacion-footer p {
+    margin: 0;
+}
+
+
+/* =========================================
+   RESPONSIVE
+   ========================================= */
+
+@media (max-width: 700px) {
+
+    .presentacion-page {
+        padding: 20px 12px 30px;
+    }
+
+    .presentacion-logo {
+        font-size: 21px;
+    }
+
+    .presentacion-logo .logo-icon {
+        width: 38px;
+        height: 38px;
+    }
+
+    .presentacion-container {
+        margin-top: 25px;
+    }
+
+    .presentacion-card {
+        padding: 35px 25px;
+
+        border-radius: 22px;
+    }
+
+    .presentacion-card h1 {
+        font-size: 32px;
+    }
+
+    .presentacion-subtitulo {
+        font-size: 16px;
+    }
+
+    .presentacion-texto p {
+        font-size: 15px;
+
+        line-height: 1.7;
+    }
+
+    .presentacion-mensaje {
+        align-items: flex-start;
+    }
+
+    .btn-comenzar {
+        width: 100%;
+
+        box-sizing: border-box;
+    }
+}

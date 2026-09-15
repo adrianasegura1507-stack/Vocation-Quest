@@ -4,13 +4,53 @@ from database import obtener_conexion
 pruebas = Blueprint("pruebas", __name__)
 
 
-@pruebas.route("/prueba/<int:id_prueba>", methods=["GET", "POST"])
-def realizar_prueba(id_prueba):
+# =========================================
+# PRESENTACIÓN DE LA PRUEBA
+# =========================================
+
+@pruebas.route("/prueba/<int:id_prueba>/inicio")
+def inicio_prueba(id_prueba):
 
     if "id_usuario" not in session:
         return redirect(url_for("auth.login"))
 
     conexion = obtener_conexion()
+    cursor = conexion.cursor(dictionary=True)
+
+    try:
+
+        sql_prueba = """
+            SELECT id_prueba, nombre, descripcion, numero_nivel
+            FROM pruebas
+            WHERE id_prueba = %s
+            AND estado = 1
+        """
+
+        cursor.execute(sql_prueba, (id_prueba,))
+        prueba = cursor.fetchone()
+
+        if prueba is None:
+            return "Prueba no encontrada"
+
+        return render_template(
+            "presentacion_prueba.html",
+            prueba=prueba
+        )
+
+    finally:
+        cursor.close()
+        conexion.close()
+
+
+# =========================================
+# REALIZAR LA PRUEBA
+# =========================================
+
+@pruebas.route("/prueba/<int:id_prueba>", methods=["GET", "POST"])
+def realizar_prueba(id_prueba):
+
+    if "id_usuario" not in session:
+        return redirect(url_for("auth.login"))
 
     conexion = obtener_conexion()
     cursor = conexion.cursor(dictionary=True)
@@ -58,7 +98,10 @@ def realizar_prueba(id_prueba):
 
         pregunta_actual = preguntas[numero - 1]
 
-        # Si el estudiante envió una respuesta
+        # =========================================
+        # GUARDAR RESPUESTA
+        # =========================================
+
         if request.method == "POST":
 
             id_opcion = request.form.get("opcion")
@@ -73,7 +116,10 @@ def realizar_prueba(id_prueba):
 
             session["respuestas_prueba"] = respuestas
 
-            # Ir a la siguiente pregunta
+            # =========================================
+            # PASAR A LA SIGUIENTE PREGUNTA
+            # =========================================
+
             siguiente = numero + 1
 
             if siguiente <= len(preguntas):
@@ -86,7 +132,10 @@ def realizar_prueba(id_prueba):
                     )
                 )
 
-            # Cuando termina la prueba
+            # =========================================
+            # TERMINÓ TODAS LAS PREGUNTAS
+            # =========================================
+
             return redirect(
                 url_for(
                     "pruebas.finalizar_prueba",
@@ -94,7 +143,10 @@ def realizar_prueba(id_prueba):
                 )
             )
 
-        # Buscar las opciones de la pregunta actual
+        # =========================================
+        # BUSCAR OPCIONES
+        # =========================================
+
         sql_opciones = """
             SELECT id_opcion, texto, orden
             FROM opciones_respuesta
@@ -119,18 +171,84 @@ def realizar_prueba(id_prueba):
         )
 
     finally:
-
         cursor.close()
         conexion.close()
 
 
+# =========================================
+# FINALIZAR NIVEL
+# =========================================
+
 @pruebas.route("/prueba/<int:id_prueba>/finalizar")
 def finalizar_prueba(id_prueba):
 
-    respuestas = session.get("respuestas_prueba", {})
+    if "id_usuario" not in session:
+        return redirect(url_for("auth.login"))
 
-    return render_template(
-        "prueba_finalizada.html",
-        respuestas=respuestas,
-        id_prueba=id_prueba
-    )
+    conexion = obtener_conexion()
+    cursor = conexion.cursor(dictionary=True)
+
+    try:
+
+        # Buscar qué nivel acaba de terminar
+        sql_prueba = """
+            SELECT id_prueba, nombre, numero_nivel
+            FROM pruebas
+            WHERE id_prueba = %s
+            AND estado = 1
+        """
+
+        cursor.execute(sql_prueba, (id_prueba,))
+        prueba = cursor.fetchone()
+
+        if prueba is None:
+            return "Prueba no encontrada"
+
+        # =========================================
+        # SI NO ES EL ÚLTIMO NIVEL
+        # =========================================
+
+        if prueba["numero_nivel"] < 5:
+
+            siguiente_nivel = prueba["numero_nivel"] + 1
+
+            sql_siguiente = """
+                SELECT id_prueba
+                FROM pruebas
+                WHERE numero_nivel = %s
+                AND estado = 1
+                LIMIT 1
+            """
+
+            cursor.execute(
+                sql_siguiente,
+                (siguiente_nivel,)
+            )
+
+            siguiente_prueba = cursor.fetchone()
+
+            if siguiente_prueba:
+
+                return redirect(
+                    url_for(
+                        "pruebas.inicio_prueba",
+                        id_prueba=siguiente_prueba["id_prueba"]
+                    )
+                )
+
+        # =========================================
+        # SI TERMINÓ EL NIVEL 5
+        # =========================================
+
+        respuestas = session.get("respuestas_prueba", {})
+
+        return render_template(
+            "prueba_finalizada.html",
+            respuestas=respuestas,
+            id_prueba=id_prueba,
+            prueba=prueba
+        )
+
+    finally:
+        cursor.close()
+        conexion.close()

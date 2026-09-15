@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{{ prueba.nombre }} | Vocation Quest</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+    <main class="presentacion-page">
+
+        <!-- LOGO -->
+        <header class="presentacion-logo">
+            <span class="logo-icon">✦</span>
+            <span>Vocation Quest</span>
+        </header>
+
+
+        <!-- CONTENIDO PRINCIPAL -->
+        <section class="presentacion-container">
+
+            <div class="presentacion-card">
+
+                <!-- ETIQUETA DEL NIVEL -->
+                <div class="nivel-badge">
+                    NIVEL {{ prueba.numero_nivel }}
+                </div>
+
+
+                <!-- TÍTULO -->
+                <h1>
+                    {{ prueba.nombre }}
+                </h1>
+
+
+                <!-- DESCRIPCIÓN CORTA -->
+                <p class="presentacion-subtitulo">
+                    {{ prueba.descripcion }}
+                </p>
+
+
+                <!-- SEPARADOR -->
+                <div class="presentacion-linea"></div>
+
+
+                <!-- DESCRIPCIÓN DEL NIVEL -->
+
+                {% if prueba.numero_nivel == 1 %}
+
+                    <div class="presentacion-texto">
+
+                        <p>
+                            En este primer nivel comenzarás a explorar aquello
+                            que despierta tu curiosidad y que disfrutas hacer.
+                            A través de diferentes situaciones y actividades,
+                            podrás reconocer qué temas llaman más tu atención
+                            y cuáles son las cosas que te generan mayor interés.
+                        </p>
+
+                        <p>
+                            No existen respuestas buenas o malas. Lo importante
+                            es que respondas pensando en lo que realmente te
+                            gusta y en las actividades con las que más te
+                            identificas. Tus respuestas nos ayudarán a conocer
+                            mejor tus intereses y a relacionarlos con diferentes
+                            áreas vocacionales.
+                        </p>
+
+                    </div>
+
+
+                {% elif prueba.numero_nivel == 2 %}
+
+                    <div class="presentacion-texto">
+
+                        <p>
+                            Ahora que has comenzado a reconocer tus intereses,
+                            es momento de descubrir tus habilidades y la manera
+                            en que prefieres aprender, resolver problemas y
+                            enfrentarte a diferentes situaciones.
+                        </p>
+
+                        <p>
+                            En este nivel encontrarás situaciones relacionadas
+                            con el aprendizaje, los retos y el trabajo en
+                            proyectos. Piensa en aquello que se te facilita,
+                            en las actividades que disfrutas realizar y en las
+                            habilidades que te gustaría seguir desarrollando.
+                        </p>
+
+                        <p>
+                            Tus respuestas permitirán identificar fortalezas
+                            que pueden ser importantes al momento de explorar
+                            diferentes opciones académicas y profesionales.
+                        </p>
+
+                    </div>
+
+
+                {% elif prueba.numero_nivel == 3 %}
+
+                    <div class="presentacion-texto">
+
+                        <p>
+                            En este nivel nos enfocaremos un poco más en ti:
+                            en tu forma de tomar decisiones, trabajar,
+                            relacionarte con otras personas y reaccionar ante
+                            diferentes situaciones.
+                        </p>
+
+                        <p>
+                            Cada persona tiene una manera diferente de
+                            organizarse, enfrentar los problemas y trabajar
+                            con los demás. Por eso, aquí no buscamos una
+                            personalidad correcta, sino conocer cuáles son
+                            las formas de actuar y trabajar con las que más
+                            te identificas.
+                        </p>
+
+                        <p>
+                            Responde pensando en cómo eres realmente, no en
+                            lo que otras personas esperan de ti. Conocerte
+                            mejor puede ayudarte a identificar ambientes y
+                            actividades profesionales en los que podrías
+                            sentirte cómodo y motivado.
+                        </p>
+
+                    </div>
+
+
+                {% elif prueba.numero_nivel == 4 %}
+
+                    <div class="presentacion-texto">
+
+                        <p>
+                            Ya conoces un poco más sobre tus intereses,
+                            habilidades y forma de trabajar. Ahora es momento
+                            de imaginarte en el futuro y pensar en las
+                            actividades, proyectos y ambientes profesionales
+                            que podrían motivarte.
+                        </p>
+
+                        <p>
+                            En este nivel tendrás la oportunidad de visualizar
+                            diferentes caminos y pensar qué aspectos valorarías
+                            en una profesión. Imagina qué tipo de proyectos te
+                            gustaría desarrollar, qué impacto quisieras generar
+                            y qué actividades disfrutarías realizando en tu
+                            vida profesional.
+                        </p>
+
+                        <p>
+                            No necesitas tener decidido qué carrera estudiar.
+                            Este nivel busca ayudarte a explorar posibilidades
+                            y a construir una idea más clara de lo que esperas
+                            encontrar en tu futuro académico y laboral.
+                        </p>
+
+                    </div>
+
+
+                {% elif prueba.numero_nivel == 5 %}
+
+                    <div class="presentacion-texto">
+
+                        <p>
+                            Has llegado al último nivel de tu recorrido. Aquí
+                            reuniremos lo que has descubierto sobre tus
+                            intereses, habilidades, personalidad y preferencias
+                            profesionales para acercarte a posibles áreas de
+                            estudio y caminos que podrías explorar.
+                        </p>
+
+                        <p>
+                            Este nivel no pretende decidir por ti qué carrera
+                            debes estudiar. Su propósito es ofrecerte una
+                            orientación basada en tus propias respuestas y
+                            ayudarte a identificar opciones que podrían
+                            relacionarse con aquello que te interesa y con lo
+                            que disfrutas hacer.
+                        </p>
+
+                        <p>
+                            Responde con sinceridad y piensa en las posibilidades
+                            que realmente te gustaría conocer. Al finalizar,
+                            podrás descubrir las áreas que presentan mayor
+                            afinidad contigo y utilizar esta información como
+                            un punto de partida para investigar carreras,
+                            programas e instituciones.
+                        </p>
+
+                    </div>
+
+                {% endif %}
+
+
+                <!-- MENSAJE FINAL -->
+
+                <div class="presentacion-mensaje">
+
+                    {% if prueba.numero_nivel == 1 %}
+
+                        <span class="mensaje-icono">🌟</span>
+
+                        <p>
+                            Conoce tus intereses y empieza a descubrir hacia
+                            dónde podrían llevarte.
+                        </p>
+
+                    {% elif prueba.numero_nivel == 2 %}
+
+                        <span class="mensaje-icono">💡</span>
+
+                        <p>
+                            Descubre tus fortalezas y reconoce todo aquello
+                            que eres capaz de hacer.
+                        </p>
+
+                    {% elif prueba.numero_nivel == 3 %}
+
+                        <span class="mensaje-icono">🪞</span>
+
+                        <p>
+                            Conócete mejor para descubrir qué ambientes y
+                            formas de trabajo se adaptan a ti.
+                        </p>
+
+                    {% elif prueba.numero_nivel == 4 %}
+
+                        <span class="mensaje-icono">🚀</span>
+
+                        <p>
+                            Imagina tu futuro y explora los caminos
+                            profesionales que podrían encajar contigo.
+                        </p>
+
+                    {% elif prueba.numero_nivel == 5 %}
+
+                        <span class="mensaje-icono">🧭</span>
+
+                        <p>
+                            Conecta lo que has descubierto sobre ti con
+                            nuevas posibilidades para tu futuro.
+                        </p>
+
+                    {% endif %}
+
+                </div>
+
+
+                <!-- BOTÓN -->
+
+                <div class="presentacion-boton-container">
+
+                    <a
+                        href="{{ url_for(
+                            'pruebas.realizar_prueba',
+                            id_prueba=prueba.id_prueba
+                        ) }}"
+                        class="btn-comenzar"
+                    >
+                        Comenzar nivel
+                        <span>→</span>
+                    </a>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- PIE -->
+
+        <footer class="presentacion-footer">
+
+            <p>
+                Vocation Quest · Explora tus intereses y construye tu futuro.
+            </p>
+
+        </footer>
+
+    </main>
+
+</body>
+
+</html>
