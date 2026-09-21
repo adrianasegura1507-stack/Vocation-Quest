@@ -18,6 +18,9 @@ def inicio():
 def inicio_estudiante():
     return render_template("inicio_estudiante.html")
 
+@app.route("/instrucciones-prueba")
+def instrucciones_prueba():
+    return render_template("instrucciones_prueba.html")
 
 if __name__ == "__main__":
     app.run(debug=True)
