@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+<title>Antes de comenzar | Vocation Quest</title>
+
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: Arial, sans-serif;
+        background: linear-gradient(135deg, #f7f3ff, #eefcf4);
+        min-height: 100vh;
+        color: #333;
+    }
+
+    header {
+        background: #6c3fc5;
+        color: white;
+        padding: 18px 7%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    }
+
+    .logo {
+        font-size: 25px;
+        font-weight: bold;
+    }
+
+    .logo span {
+        color: #bdf5d2;
+    }
+
+    .mini-text {
+        font-size: 14px;
+        opacity: 0.9;
+    }
+
+    main {
+        width: 90%;
+        max-width: 1050px;
+        margin: 45px auto;
+    }
+
+    .intro {
+        text-align: center;
+        margin-bottom: 35px;
+    }
+
+    .level {
+        display: inline-block;
+        background: #e4d8ff;
+        color: #6336ad;
+        padding: 8px 18px;
+        border-radius: 30px;
+        font-size: 14px;
+        font-weight: bold;
+        margin-bottom: 15px;
+    }
+
+    h1 {
+        font-size: 38px;
+        color: #56319d;
+        margin-bottom: 12px;
+    }
+
+    .intro p {
+        max-width: 650px;
+        margin: auto;
+        line-height: 1.6;
+        color: #666;
+    }
+
+    .mission {
+        background: white;
+        border-radius: 22px;
+        padding: 25px;
+        margin-bottom: 30px;
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        box-shadow: 0 8px 25px rgba(86,49,157,0.10);
+        border-left: 6px solid #7b4bd6;
+    }
+
+    .mission-icon {
+        width: 65px;
+        height: 65px;
+        background: #efe8ff;
+        border-radius: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 32px;
+        flex-shrink: 0;
+    }
+
+    .mission h2 {
+        color: #56319d;
+        font-size: 20px;
+        margin-bottom: 5px;
+    }
+
+    .mission p {
+        color: #666;
+        line-height: 1.5;
+    }
+
+    .rules {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 18px;
+        margin-bottom: 30px;
+    }
+
+    .rule {
+        background: white;
+        border-radius: 20px;
+        padding: 25px 18px;
+        text-align: center;
+        box-shadow: 0 7px 20px rgba(0,0,0,0.06);
+        transition: 0.3s ease;
+        border: 2px solid transparent;
+    }
+
+    .rule:hover {
+        transform: translateY(-7px);
+        border-color: #cdb9f5;
+        box-shadow: 0 12px 25px rgba(108,63,197,0.13);
+    }
+
+    .rule-icon {
+        font-size: 35px;
+        margin-bottom: 13px;
+    }
+
+    .rule h3 {
+        color: #56319d;
+        margin-bottom: 8px;
+        font-size: 17px;
+    }
+
+    .rule p {
+        color: #777;
+        font-size: 14px;
+        line-height: 1.5;
+    }
+
+    .important {
+        background: #fffdf2;
+        border: 2px solid #f0d878;
+        border-radius: 20px;
+        padding: 25px;
+        margin-bottom: 35px;
+    }
+
+    .important h2 {
+        color: #806600;
+        margin-bottom: 10px;
+        font-size: 20px;
+    }
+
+    .important p {
+        color: #665c35;
+        line-height: 1.6;
+    }
+
+    .start-section {
+        text-align: center;
+        background: white;
+        border-radius: 25px;
+        padding: 35px 25px;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.07);
+    }
+
+    .start-section h2 {
+        color: #56319d;
+        margin-bottom: 10px;
+    }
+
+    .start-section p {
+        color: #666;
+        margin-bottom: 25px;
+    }
+
+    .button {
+        display: inline-block;
+        text-decoration: none;
+        background: #6c3fc5;
+        color: white;
+        padding: 15px 35px;
+        border-radius: 30px;
+        font-weight: bold;
+        font-size: 17px;
+        transition: 0.3s ease;
+        box-shadow: 0 6px 15px rgba(108,63,197,0.25);
+    }
+
+    .button:hover {
+        background: #56319d;
+        transform: translateY(-3px);
+        box-shadow: 0 10px 20px rgba(108,63,197,0.30);
+    }
+
+    .small-note {
+        margin-top: 15px;
+        font-size: 12px;
+        color: #999;
+    }
+
+    footer {
+        text-align: center;
+        padding: 25px;
+        color: #888;
+        font-size: 13px;
+    }
+
+    @media (max-width: 800px) {
+        .rules {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        h1 {
+            font-size: 31px;
+        }
+    }
+
+    @media (max-width: 500px) {
+        .rules {
+            grid-template-columns: 1fr;
+        }
+
+        .mission {
+            flex-direction: column;
+            text-align: center;
+        }
+
+        main {
+            margin-top: 30px;
+        }
+    }
+</style>
+
+
+</head>
+
+<body>
+
+
+<header>
+    <div class="logo">
+        Vocation <span>Quest</span>
+    </div>
+
+    <div class="mini-text">
+        Tu aventura comienza aquí 🚀
+    </div>
+</header>
+
+<main>
+
+    <section class="intro">
+
+        <div class="level">
+            NIVEL 1 · CONÓCETE
+        </div>
+
+        <h1>Tu primera misión 🎯</h1>
+
+        <p>
+            Antes de comenzar, conoce cómo funciona esta aventura.
+            Tus respuestas nos ayudarán a descubrir áreas que pueden
+            relacionarse con tus intereses y habilidades.
+        </p>
+
+    </section>
+
+
+    <section class="mission">
+
+        <div class="mission-icon">
+            🗺️
+        </div>
+
+        <div>
+            <h2>Tu misión</h2>
+
+            <p>
+                Completa este nivel respondiendo las preguntas de manera
+                sincera. No necesitas saber todavía qué carrera quieres
+                estudiar. ¡Solo concéntrate en conocerte!
+            </p>
+        </div>
+
+    </section>
+
+
+    <section class="rules">
+
+        <div class="rule">
+
+            <div class="rule-icon">
+                🎯
+            </div>
+
+            <h3>Responde con sinceridad</h3>
+
+            <p>
+                Elige las respuestas que realmente representen tus
+                intereses y preferencias.
+            </p>
+
+        </div>
+
+
+        <div class="rule">
+
+            <div class="rule-icon">
+                📖
+            </div>
+
+            <h3>Lee con atención</h3>
+
+            <p>
+                Tómate unos segundos para comprender cada pregunta antes
+                de responder.
+            </p>
+
+        </div>
+
+
+        <div class="rule">
+
+            <div class="rule-icon">
+                🧠
+            </div>
+
+            <h3>Piensa en ti</h3>
+
+            <p>
+                No respondas pensando en lo que otras personas esperan de
+                ti. Este espacio es para conocerte.
+            </p>
+
+        </div>
+
+
+        <div class="rule">
+
+            <div class="rule-icon">
+                ❤️
+            </div>
+
+            <h3>No hay respuestas correctas</h3>
+
+            <p>
+                La prueba busca conocer tus preferencias, no medir si
+                respondes bien o mal.
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <section class="important">
+
+        <h2>⚠️ Algo importante</h2>
+
+        <p>
+            Vocation Quest es una herramienta de orientación y
+            autoconocimiento. Sus resultados son una referencia para
+            explorar posibles opciones académicas y profesionales y no
+            sustituyen la orientación de un psicólogo, orientador o
+            profesional especializado.
+        </p>
+
+    </section>
+
+
+    <section class="start-section">
+
+        <h2>¿Listo para comenzar? 🚀</h2>
+
+        <p>
+            Completa tu primera misión y empieza a descubrir tu camino
+            vocacional.
+        </p>
+
+        <!-- Esta ruta se conectará con la prueba cuando esté lista -->
+        <a href="#" class="button">
+            Comenzar Nivel 1 🚀
+        </a>
+
+        <div class="small-note">
+            Recuerda: puedes avanzar a tu propio ritmo.
+        </div>
+
+    </section>
+
+</main>
+
+
+<footer>
+    Vocation Quest · Descubre, explora y construye tu camino.
+</footer>
+
+</body>
+</html>
