@@ -29,9 +29,11 @@ def inicio_estudiante():
     cursor = conexion.cursor(dictionary=True)
 
     try:
+
         # ---------------------------------------------------------
         # 1. Buscar el estudiante relacionado con el usuario
         # ---------------------------------------------------------
+
         cursor.execute(
             """
             SELECT id_estudiante
@@ -55,8 +57,9 @@ def inicio_estudiante():
         id_estudiante = estudiante["id_estudiante"]
 
         # ---------------------------------------------------------
-        # 2. Obtener los 5 niveles/pruebas
+        # 2. Obtener los niveles/pruebas
         # ---------------------------------------------------------
+
         cursor.execute(
             """
             SELECT id_prueba, nombre, numero_nivel
@@ -76,12 +79,16 @@ def inicio_estudiante():
         # ---------------------------------------------------------
         # 3. Revisar el progreso de cada nivel
         # ---------------------------------------------------------
+
         for prueba in pruebas:
 
             id_prueba = prueba["id_prueba"]
             numero_nivel = prueba["numero_nivel"]
 
+            # -----------------------------------------------------
             # Cantidad total de preguntas del nivel
+            # -----------------------------------------------------
+
             cursor.execute(
                 """
                 SELECT COUNT(*) AS total
@@ -99,6 +106,7 @@ def inicio_estudiante():
             # -----------------------------------------------------
             # Buscar el último intento del estudiante
             # -----------------------------------------------------
+
             cursor.execute(
                 """
                 SELECT id_intento, completado
@@ -124,6 +132,7 @@ def inicio_estudiante():
                 # -------------------------------------------------
                 # Contar las preguntas respondidas
                 # -------------------------------------------------
+
                 cursor.execute(
                     """
                     SELECT COUNT(DISTINCT ru.id_pregunta) AS respondidas
@@ -144,6 +153,7 @@ def inicio_estudiante():
             # -----------------------------------------------------
             # Calcular porcentaje del nivel
             # -----------------------------------------------------
+
             if total_preguntas > 0:
                 porcentaje = round(
                     (respondidas / total_preguntas) * 100
@@ -155,13 +165,43 @@ def inicio_estudiante():
             if completado:
                 porcentaje = 100
 
+            # -----------------------------------------------------
             # Estado del nivel
+            # -----------------------------------------------------
+
             if completado:
+
                 estado = "completado"
+
             elif respondidas > 0:
+
                 estado = "progreso"
+
             else:
-                estado = "disponible"
+
+                # El nivel 1 siempre está disponible
+                if numero_nivel == 1:
+
+                    estado = "disponible"
+
+                else:
+
+                    # Revisar si el nivel anterior está completado
+                    nivel_anterior = niveles.get(
+                        numero_nivel - 1
+                    )
+
+                    if (
+                        nivel_anterior
+                        and nivel_anterior["completado"]
+                    ):
+                        estado = "disponible"
+                    else:
+                        estado = "bloqueado"
+
+            # -----------------------------------------------------
+            # Guardar información del nivel
+            # -----------------------------------------------------
 
             niveles[numero_nivel] = {
                 "id_prueba": id_prueba,
@@ -173,19 +213,33 @@ def inicio_estudiante():
                 "estado": estado
             }
 
+            # -----------------------------------------------------
             # Acumular para el progreso general
+            # -----------------------------------------------------
+
             preguntas_respondidas_total += respondidas
             preguntas_totales_total += total_preguntas
 
         # ---------------------------------------------------------
         # 4. Calcular progreso general
         # ---------------------------------------------------------
+
         if preguntas_totales_total > 0:
+
             progreso_general = round(
-                (preguntas_respondidas_total / preguntas_totales_total) * 100
+                (
+                    preguntas_respondidas_total
+                    / preguntas_totales_total
+                ) * 100
             )
+
         else:
+
             progreso_general = 0
+
+        # ---------------------------------------------------------
+        # 5. Mostrar página del estudiante
+        # ---------------------------------------------------------
 
         return render_template(
             "inicio_estudiante.html",
@@ -196,6 +250,7 @@ def inicio_estudiante():
         )
 
     finally:
+
         cursor.close()
         conexion.close()
 
