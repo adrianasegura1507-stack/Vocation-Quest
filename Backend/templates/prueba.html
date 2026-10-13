@@ -1,172 +1,131 @@
 <!DOCTYPE html>
-
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-```
-<title>{{ prueba.nombre }} | Vocation Quest</title>
+    <title>{{ prueba.nombre }} | Vocation Quest</title>
 
-<link rel="stylesheet"
-      href="{{ url_for('static', filename='css/style.css') }}">
-```
-
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 
 <body>
+    <main class="prueba-page">
 
-```
-<main class="prueba-page">
+        <header class="logo">
+            <span class="logo-icon">✦</span>
+            <span>Vocation Quest</span>
+        </header>
 
-    <header class="logo">
-        <span class="logo-icon">✦</span>
-        <span>Vocation Quest</span>
-    </header>
+        <section class="prueba-container">
 
-    <section class="prueba-container">
+            <div class="prueba-header">
+                <p class="etiqueta">
+                    NIVEL {{ prueba.numero_nivel }}
+                </p>
 
-        <div class="prueba-header">
+                <h1>{{ prueba.nombre }}</h1>
 
-            <p class="etiqueta">
-                NIVEL {{ prueba.numero_nivel }}
-            </p>
-
-            <h1>
-                {{ prueba.nombre }}
-            </h1>
-
-            <p>
-                {{ prueba.descripcion }}
-            </p>
-
-        </div>
-
-
-        <!-- Progreso -->
-
-        <div class="progreso-info">
-
-            <span>
-                Pregunta {{ numero }} de {{ total }}
-            </span>
-
-            <span>
-                {{ ((numero / total) * 100)|round|int }}%
-            </span>
-
-        </div>
-
-
-        <div class="barra-progreso">
-
-            <div class="barra-progreso-relleno progreso-dinamico">
+                <p>{{ prueba.descripcion }}</p>
             </div>
 
-        </div>
+            <!-- Progreso -->
+            {% set porcentaje = (((numero - 1) / total) * 100)|round|int %}
 
+            <div class="progreso-info">
+                <span>
+                    Pregunta {{ numero }} de {{ total }}
+                </span>
 
-        <!-- Pregunta -->
+                <span>{{ porcentaje }}%</span>
+            </div>
 
-        <div class="pregunta-card">
+            <div class="barra-progreso">
+                <div
+                    class="barra-progreso-relleno progreso-dinamico"
+                    style="width: {{ porcentaje }}%;"
+                ></div>
+            </div>
 
-            <h2>
-                {{ pregunta.pregunta }}
-            </h2>
+            <!-- Pregunta -->
+            <div class="pregunta-card">
 
+                <h2>{{ pregunta.pregunta }}</h2>
 
-            <form method="POST">
+                <form method="POST">
 
-                <div class="opciones">
+                    <div class="opciones">
+                        {% for opcion in opciones %}
+                            <label class="opcion">
 
-                    {% for opcion in opciones %}
+                                <input
+                                    type="radio"
+                                    name="opcion"
+                                    value="{{ opcion.id_opcion }}"
+                                    {% if respuesta_guardada == opcion.id_opcion %}
+                                        checked
+                                    {% endif %}
+                                    required
+                                >
 
-                    <label class="opcion">
+                                <span class="letra">
+                                    {{ "ABCD"[loop.index0] }}
+                                </span>
 
-                        <input
-                            type="radio"
-                            name="opcion"
-                            value="{{ opcion.id_opcion }}"
-                            {% if respuesta_guardada == opcion.id_opcion %}
-                                checked
-                            {% endif %}
-                            required
-                        >
+                                <span class="texto-opcion">
+                                    {{ opcion.texto }}
+                                </span>
 
-                        <span class="letra">
-                            {{ "ABCD"[loop.index0] }}
-                        </span>
+                            </label>
+                        {% endfor %}
+                    </div>
 
-                        <span class="texto-opcion">
-                            {{ opcion.texto }}
-                        </span>
+                    <div class="botones-prueba">
 
-                    </label>
-
-                    {% endfor %}
-
-                </div>
-
-
-                <div class="botones-prueba">
-
-                    {% if numero > 1 %}
-
-                    <a
-                        href="{{ url_for(
-                            'pruebas.realizar_prueba',
-                            id_prueba=prueba.id_prueba,
-                            pregunta=numero-1
-                        ) }}"
-                        class="btn-anterior"
-                    >
-                        ← Anterior
-                    </a>
-
-                    {% endif %}
-
-
-                    <button
-                        type="submit"
-                        class="btn-siguiente"
-                    >
-
-                        {% if numero == total %}
-                            Finalizar prueba
-                        {% else %}
-                            Siguiente →
+                        {% if numero > 1 %}
+                            <a
+                                href="{{ url_for(
+                                    'pruebas.realizar_prueba',
+                                    id_prueba=prueba.id_prueba,
+                                    pregunta=numero-1
+                                ) }}"
+                                class="btn-anterior"
+                            >
+                                ← Anterior
+                            </a>
                         {% endif %}
 
-                    </button>
+                        <button
+                            type="submit"
+                            class="btn-siguiente"
+                        >
+                            {% if numero == total %}
+                                Finalizar prueba
+                            {% else %}
+                                Siguiente →
+                            {% endif %}
+                        </button>
 
+                    </div>
+                </form>
+
+                <!-- Salir de la prueba -->
+                <div class="salir-prueba">
+                    <a
+                        href="{{ url_for(
+                            'pruebas.salir_prueba',
+                            id_prueba=prueba.id_prueba
+                        ) }}"
+                        onclick="return confirm('¿Seguro que quieres salir? Tu progreso quedará guardado.')"
+                    >
+                        🚪 Salir de la prueba
+                    </a>
                 </div>
 
-            </form>
-
-
-            <!-- Salir de la prueba -->
-
-            <div class="salir-prueba">
-
-                <a
-                    href="{{ url_for(
-                        'pruebas.salir_prueba',
-                        id_prueba=prueba.id_prueba
-                    ) }}"
-                    onclick="return confirm('¿Seguro que quieres salir? Tu progreso quedará guardado.')"
-                >
-                    🚪 Salir de la prueba
-                </a>
-
             </div>
-
-        </div>
-
-    </section>
-
-</main>
-```
-
+        </section>
+    </main>
 </body>
 </html>
+```

@@ -275,19 +275,23 @@ def inicio_prueba(id_prueba):
                 resultado_final=True
             )
 
+        
         # =========================================
-        # SI NO ES EL NIVEL 5
+        # SI NO ES EL NIVEL 5, ABRIR LAS PREGUNTAS
         # =========================================
 
-        return render_template(
-            "prueba_finalizada.html",
-            prueba=prueba,
-            resultado_final=False
+        return redirect(
+            url_for(
+                "pruebas.realizar_prueba",
+                id_prueba=id_prueba
+            )
         )
+
 
     finally:
         cursor.close()
         conexion.close()
+
 
 
 # =========================================
@@ -828,15 +832,33 @@ def finalizar_prueba(id_prueba):
                 resultado_final=True
             )
 
+        
         # =========================================
         # SI NO ES EL NIVEL 5
         # =========================================
 
+        # Buscar el siguiente nivel
+        cursor.execute(
+            """
+            SELECT id_prueba, nombre, numero_nivel
+            FROM pruebas
+            WHERE numero_nivel = %s
+            AND estado = 1
+            LIMIT 1
+            """,
+            (prueba["numero_nivel"] + 1,)
+        )
+
+        siguiente_prueba = cursor.fetchone()
+
+        # Mostrar la pantalla de nivel completado
         return render_template(
             "prueba_finalizada.html",
             prueba=prueba,
+            siguiente_prueba=siguiente_prueba,
             resultado_final=False
         )
+
 
     finally:
 
