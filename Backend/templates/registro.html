@@ -71,7 +71,7 @@
                 {% endif %}
 
 
-                <form action="/registro" method="POST">
+                <form action="/registro" method="POST" novalidate>
 
 
                     <!-- NOMBRE -->
@@ -214,52 +214,6 @@
                             max="{{ fecha_max }}"
                             value="{{ datos.get('fecha_nacimiento', '') }}"
                         >
-
-                    </div>
-
-
-                    <!-- GRADO -->
-                    <div class="campo">
-
-                        <div class="campo-titulo">
-
-                            <label for="grado">
-                                Grado
-                            </label>
-
-                            <span class="ayuda">
-
-                                ?
-
-                                <span class="ayuda-texto">
-                                    Selecciona el grado que estás
-                                    cursando actualmente.
-                                </span>
-
-                            </span>
-
-                        </div>
-
-
-                        <select
-                            id="grado"
-                            name="grado"
-                            required
-                        >
-
-                            <option value="" disabled {% if not datos.get('grado') %}selected{% endif %}>
-                                Selecciona tu grado
-                            </option>
-
-                            <option value="10" {% if datos.get('grado') == '10' %}selected{% endif %}>
-                                10°
-                            </option>
-
-                            <option value="11" {% if datos.get('grado') == '11' %}selected{% endif %}>
-                                11°
-                            </option>
-
-                        </select>
 
                     </div>
 

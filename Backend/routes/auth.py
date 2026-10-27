@@ -17,10 +17,13 @@ auth = Blueprint("auth", __name__)
 EDAD_MINIMA = 13
 EDAD_MAXIMA = 100
 
-GRADOS_VALIDOS = ("10", "11")
-
 PATRON_NOMBRE = re.compile(r"^[A-Za-zÁÉÍÓÚáéíóúÑñÜü ]+$")
+PATRON_CORREO = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
 
+
+# =========================================
+# FECHAS Y EDAD
+# =========================================
 
 def restar_anios(fecha, anios):
     """
@@ -62,6 +65,64 @@ def limites_fecha_nacimiento(hoy=None):
     return fecha_min, fecha_max
 
 
+# =========================================
+# VALIDACIONES REUTILIZABLES
+# (las usan el registro y el perfil)
+# Cada una devuelve un mensaje de error, o None si todo está bien.
+# =========================================
+
+def validar_nombre(nombre):
+    if len(nombre) < 2 or len(nombre) > 100 \
+            or not PATRON_NOMBRE.match(nombre):
+        return (
+            "El nombre debe tener entre 2 y 100 caracteres, "
+            "solo letras y espacios."
+        )
+    return None
+
+
+def validar_correo(correo):
+    if len(correo) > 150 or not PATRON_CORREO.match(correo):
+        return (
+            "Escribe un correo electrónico válido "
+            "(por ejemplo, nombre@correo.com)."
+        )
+    return None
+
+
+def validar_contrasena(contrasena):
+    if len(contrasena) < 8 or len(contrasena) > 255:
+        return "La contraseña debe tener mínimo 8 caracteres."
+    return None
+
+
+def validar_fecha_nacimiento(texto):
+    """
+    Revisa la fecha que llegó del calendario (formato AAAA-MM-DD).
+    Devuelve (fecha, edad, error). Si hay error, fecha y edad son None.
+    """
+    try:
+        fecha = datetime.strptime(texto, "%Y-%m-%d").date()
+    except ValueError:
+        return None, None, "Elige tu fecha de nacimiento en el calendario."
+
+    if fecha > date.today():
+        return None, None, "La fecha de nacimiento no puede ser futura."
+
+    edad = calcular_edad(fecha)
+
+    if edad < EDAD_MINIMA or edad > EDAD_MAXIMA:
+        return None, None, (
+            f"Debes tener entre {EDAD_MINIMA} y {EDAD_MAXIMA} años."
+        )
+
+    return fecha, edad, None
+
+
+# =========================================
+# REGISTRO
+# =========================================
+
 def mostrar_registro(error=None, datos=None):
     """
     Muestra el formulario de registro. Si hubo un error,
@@ -89,71 +150,32 @@ def registro():
         correo = request.form.get("correo", "").strip()
         contrasena = request.form.get("contrasena", "")
         fecha_texto = request.form.get("fecha_nacimiento", "").strip()
-        grado = request.form.get("grado", "")
 
         # Lo que escribió, para volver a mostrarlo si hay un error
         # (la contraseña nunca se vuelve a mostrar)
         datos = {
             "nombre": nombre,
             "correo": correo,
-            "fecha_nacimiento": fecha_texto,
-            "grado": grado
+            "fecha_nacimiento": fecha_texto
         }
 
         # -----------------------------------------
         # Validaciones
         # -----------------------------------------
 
-        if len(nombre) < 2 or len(nombre) > 100 \
-                or not PATRON_NOMBRE.match(nombre):
-            return mostrar_registro(
-                "El nombre debe tener entre 2 y 100 caracteres, "
-                "solo letras y espacios.",
-                datos
-            )
+        error = (
+            validar_nombre(nombre)
+            or validar_correo(correo)
+            or validar_contrasena(contrasena)
+        )
 
-        if "@" not in correo or len(correo) > 150:
-            return mostrar_registro(
-                "Escribe un correo electrónico válido.",
-                datos
-            )
+        if error:
+            return mostrar_registro(error, datos)
 
-        if len(contrasena) < 8 or len(contrasena) > 255:
-            return mostrar_registro(
-                "La contraseña debe tener mínimo 8 caracteres.",
-                datos
-            )
+        fecha_nacimiento, edad, error = validar_fecha_nacimiento(fecha_texto)
 
-        if grado not in GRADOS_VALIDOS:
-            return mostrar_registro(
-                "Selecciona tu grado.",
-                datos
-            )
-
-        try:
-            fecha_nacimiento = datetime.strptime(
-                fecha_texto, "%Y-%m-%d"
-            ).date()
-        except ValueError:
-            return mostrar_registro(
-                "Elige tu fecha de nacimiento en el calendario.",
-                datos
-            )
-
-        if fecha_nacimiento > date.today():
-            return mostrar_registro(
-                "La fecha de nacimiento no puede ser futura.",
-                datos
-            )
-
-        edad = calcular_edad(fecha_nacimiento)
-
-        if edad < EDAD_MINIMA or edad > EDAD_MAXIMA:
-            return mostrar_registro(
-                f"Para registrarte debes tener entre {EDAD_MINIMA} "
-                f"y {EDAD_MAXIMA} años.",
-                datos
-            )
+        if error:
+            return mostrar_registro(error, datos)
 
         # -----------------------------------------
         # Guardar en la base de datos
@@ -198,13 +220,13 @@ def registro():
             # Crear estudiante (la edad se calcula con la fecha)
             sql_estudiante = """
                 INSERT INTO estudiantes
-                (id_usuario, edad, fecha_nacimiento, grado)
-                VALUES (%s, %s, %s, %s)
+                (id_usuario, edad, fecha_nacimiento)
+                VALUES (%s, %s, %s)
             """
 
             cursor.execute(
                 sql_estudiante,
-                (id_usuario, edad, fecha_nacimiento, grado)
+                (id_usuario, edad, fecha_nacimiento)
             )
 
             conexion.commit()
@@ -231,6 +253,10 @@ def registro():
 
     return mostrar_registro()
 
+
+# =========================================
+# INICIO DE SESIÓN
+# =========================================
 
 def mostrar_login(error=None, correo=""):
     """
