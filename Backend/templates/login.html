@@ -70,6 +70,17 @@
                 </div>
 
 
+                <!-- MENSAJE DE ERROR (solo aparece si hay uno) -->
+                {% if error %}
+                <div
+                    role="alert"
+                    style="background:#fdecec; color:#9b1c1c; border:1px solid #f5b5b5; border-radius:12px; padding:12px 16px; margin-bottom:16px; font-size:0.95rem;"
+                >
+                    {{ error }}
+                </div>
+                {% endif %}
+
+
                 <form action="/login" method="POST">
 
                     <!-- CORREO -->
@@ -100,6 +111,7 @@
                             name="correo"
                             placeholder="ejemplo@correo.com"
                             required
+                            value="{{ correo or '' }}"
                         >
 
                     </div>

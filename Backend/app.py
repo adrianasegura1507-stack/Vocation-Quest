@@ -314,8 +314,12 @@ def inicio_estudiante():
             (id_estudiante,)
         )
 
+        # Siempre se lee el resultado de la consulta (aunque no se use),
+        # para que MySQL no se queje en la siguiente consulta
+        fila_resultado = cursor.fetchone()
+
         resultado_visto = (
-            pruebas_completas and cursor.fetchone() is not None
+            pruebas_completas and fila_resultado is not None
         )
 
         if resultado_visto:
