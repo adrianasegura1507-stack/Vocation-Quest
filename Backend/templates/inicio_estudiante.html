@@ -1,3 +1,45 @@
+{% macro tarjeta_nivel(numero, clase, nombre, nivel) %}
+    {% set estado = nivel.estado if nivel else 'bloqueado' %}
+
+    {% if estado == 'bloqueado' %}
+
+        <div class="level {{ clase }} locked" tabindex="0">
+            <div class="level-number">{{ numero }}</div>
+            <div class="level-name">{{ nombre }}</div>
+            <div class="level-state">Bloqueado</div>
+            <div class="level-tooltip">
+                ¡Realiza los niveles anteriores para desbloquear este!
+            </div>
+        </div>
+
+    {% elif estado == 'completado' %}
+
+        <div class="level {{ clase }} done" tabindex="0">
+            <div class="level-number">{{ numero }}</div>
+            <div class="level-name">{{ nombre }}</div>
+            <div class="level-state">✅ Completado</div>
+            <div class="level-tooltip">
+                ¡Nivel superado! Tu progreso quedó guardado.
+            </div>
+        </div>
+
+    {% else %}
+
+        <a href="{{ url_for('pruebas.inicio_prueba', id_prueba=nivel.id_prueba) }}"
+           class="level {{ clase }}" tabindex="0">
+            <div class="level-number">{{ numero }}</div>
+            <div class="level-name">{{ nombre }}</div>
+            <div class="level-state">
+                🔓 {% if estado == 'progreso' %}En progreso ({{ nivel.respondidas }}/{{ nivel.total }}){% else %}Disponible{% endif %}
+            </div>
+            <div class="level-tooltip">
+                {{ nivel.descripcion or "¡Haz clic para comenzar este nivel!" }}
+            </div>
+        </a>
+
+    {% endif %}
+{% endmacro %}
+
 <!DOCTYPE html>
 
 <html lang="es">
@@ -5,7 +47,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-```
 <title>Mi aventura | Vocation Quest</title>
 
 <style>
@@ -220,7 +261,7 @@
 
     .stats {
         display: grid;
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(2, 1fr);
         gap: 18px;
         margin-bottom: 30px;
     }
@@ -340,7 +381,6 @@
         border: 2px dashed #d7d4e4;
         border-radius: 20px;
         padding: 22px;
-        overflow: hidden;
     }
 
     .map-decoration {
@@ -652,6 +692,48 @@
     }
 
     /* =========================
+       DESCRIPCIÓN AL PASAR EL CURSOR
+    ========================= */
+
+    .level-tooltip {
+        display: none;
+        position: absolute;
+        top: calc(100% + 10px);
+        left: 50%;
+        transform: translateX(-50%);
+        width: 210px;
+        background: var(--morado-oscuro);
+        color: white;
+        padding: 11px 13px;
+        border-radius: 12px;
+        font-size: 12px;
+        font-weight: normal;
+        line-height: 1.4;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .level:hover .level-tooltip,
+    .level:focus .level-tooltip {
+        display: block;
+    }
+
+    .level:hover,
+    .level:focus {
+        z-index: 20;
+    }
+
+    /* Las tarjetas de abajo muestran la descripción hacia arriba */
+    .level-four .level-tooltip,
+    .level-five .level-tooltip {
+        top: auto;
+        bottom: calc(100% + 10px);
+    }
+
+    .level.done {
+        border-color: var(--verde);
+    }
+
+    /* =========================
        PIE DE PÁGINA
     ========================= */
 
@@ -867,13 +949,11 @@
         }
     }
 </style>
-```
 
 </head>
 
 <body>
 
-```
 <!-- =========================
      BARRA SUPERIOR
 ========================= -->
@@ -936,15 +1016,6 @@
     <section class="stats">
 
         <article class="stat-card">
-            <div class="stat-icon points">⭐</div>
-
-            <div class="stat-info">
-                <h3>Mis puntos</h3>
-                <div class="stat-number">0</div>
-            </div>
-        </article>
-
-        <article class="stat-card">
             <div class="stat-icon progress">🌱</div>
 
             <div class="stat-info">
@@ -993,50 +1064,11 @@
                 <div class="map-path"></div>
 
                 <!-- NIVEL 1 -->
-
-                <a
-                    href="{{ url_for('pruebas.inicio_prueba', id_prueba=1) }}"
-                    class="level level-one"
-                    tabindex="0"
-                    data-level="1"
-                >
-                    <div class="level-number">1</div>
-                    <div class="level-name">Conociéndome</div>
-                    <div class="level-state">Disponible</div>
-                </a>
-
-                <!-- NIVEL 2 -->
-
-                <div class="level level-two locked" tabindex="0" data-level="2">
-                    <div class="level-number">2</div>
-                    <div class="level-name">Mis intereses</div>
-                    <div class="level-state">Bloqueado</div>
-                </div>
-
-                <!-- NIVEL 3 -->
-
-                <div class="level level-three locked" tabindex="0" data-level="3">
-                    <div class="level-number">3</div>
-                    <div class="level-name">Mis habilidades</div>
-                    <div class="level-state">Bloqueado</div>
-                </div>
-
-                <!-- NIVEL 4 -->
-
-                <div class="level level-four locked" tabindex="0" data-level="4">
-                    <div class="level-number">4</div>
-                    <div class="level-name">Mis opciones</div>
-                    <div class="level-state">Bloqueado</div>
-                </div>
-
-                <!-- NIVEL 5 -->
-
-                <div class="level level-five locked" tabindex="0" data-level="5">
-                    <div class="level-number">5</div>
-                    <div class="level-name">Mi resultado</div>
-                    <div class="level-state">Bloqueado</div>
-                </div>
-
+                {{ tarjeta_nivel(1, 'level-one',   'Conociéndome',    niveles.get(1)) }}
+                {{ tarjeta_nivel(2, 'level-two',   'Mis intereses',   niveles.get(2)) }}
+                {{ tarjeta_nivel(3, 'level-three', 'Mis habilidades', niveles.get(3)) }}
+                {{ tarjeta_nivel(4, 'level-four',  'Mis opciones',    niveles.get(4)) }}
+                {{ tarjeta_nivel(5, 'level-five',  'Mi resultado',    niveles.get(5)) }}
                 <div class="map-message" id="map-message">
                     Selecciona un nivel para conocer más sobre tu aventura.
                 </div>
@@ -1239,7 +1271,6 @@
     </p>
 
 </footer>
-```
 
 </body>
 </html>
