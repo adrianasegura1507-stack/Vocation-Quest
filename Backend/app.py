@@ -1,6 +1,6 @@
 from flask import Flask, render_template, session, redirect, url_for
 from routes.auth import auth
-from routes.pruebas import pruebas
+from routes.pruebas import pruebas, NIVELES_PRUEBA
 from database import obtener_conexion
 
 app = Flask(__name__)
@@ -95,7 +95,7 @@ def inicio_estudiante():
                 preguntas_totales=0,
                 niveles={},
                 mision=None,
-                todos_completados=False,
+                aventura_completa=False,
                 logros=[],
                 logros_desbloqueados=0
             )
@@ -111,8 +111,10 @@ def inicio_estudiante():
             SELECT id_prueba, nombre, descripcion, numero_nivel
             FROM pruebas
             WHERE estado = 1
+            AND numero_nivel <= %s
             ORDER BY numero_nivel
-            """
+            """,
+            (NIVELES_PRUEBA,)
         )
 
         lista_pruebas = cursor.fetchall()
@@ -289,8 +291,61 @@ def inicio_estudiante():
             progreso_general = 0
 
         # ---------------------------------------------------------
-        # 5. Misión actual: el primer nivel que se puede jugar
-        #    y todavía no está completado
+        # 5. Nivel 5: los resultados. No tiene preguntas.
+        #    - Se desbloquea al completar los niveles 1 al 4.
+        #    - Queda "completado" cuando la estudiante ya vio
+        #      sus resultados (se guardan en la tabla "resultados").
+        # ---------------------------------------------------------
+
+        pruebas_completas = (
+            len(niveles) == NIVELES_PRUEBA
+            and all(n["completado"] for n in niveles.values())
+        )
+
+        cursor.execute(
+            """
+            SELECT r.id_resultado
+            FROM resultados r
+            INNER JOIN intentos_prueba ip
+                ON ip.id_intento = r.id_intento
+            WHERE ip.id_estudiante = %s
+            LIMIT 1
+            """,
+            (id_estudiante,)
+        )
+
+        resultado_visto = (
+            pruebas_completas and cursor.fetchone() is not None
+        )
+
+        if resultado_visto:
+            estado_resultado = "completado"
+        elif pruebas_completas:
+            estado_resultado = "disponible"
+        else:
+            estado_resultado = "bloqueado"
+
+        niveles[NIVELES_PRUEBA + 1] = {
+            "id_prueba": None,
+            "numero": NIVELES_PRUEBA + 1,
+            "nombre": "Mi resultado",
+            "descripcion": (
+                "¡Terminaste todas las pruebas! Entra para descubrir "
+                "las áreas que más se parecen a ti."
+            ),
+            "respondidas": 0,
+            "total": 0,
+            "porcentaje": 100 if resultado_visto else 0,
+            "completado": resultado_visto,
+            "estado": estado_resultado
+        }
+
+        # La aventura termina cuando ya vio sus resultados
+        aventura_completa = resultado_visto
+
+        # ---------------------------------------------------------
+        # Misión actual: el primer nivel (del 1 al 5) que se puede
+        # jugar y todavía no está completado
         # ---------------------------------------------------------
 
         mision = None
@@ -303,19 +358,14 @@ def inicio_estudiante():
                 mision = nivel
                 break
 
-        todos_completados = (
-            len(niveles) > 0
-            and all(n["completado"] for n in niveles.values())
+        niveles_completados = sum(
+            1 for n in niveles.values() if n["completado"]
         )
 
         # ---------------------------------------------------------
         # 6. Logros: revisar cuáles cumple el estudiante
         #    y guardar los nuevos en estudiante_logro
         # ---------------------------------------------------------
-
-        niveles_completados = sum(
-            1 for n in niveles.values() if n["completado"]
-        )
 
         cursor.execute(
             """
@@ -393,7 +443,7 @@ def inicio_estudiante():
             preguntas_totales=preguntas_totales_total,
             niveles=niveles,
             mision=mision,
-            todos_completados=todos_completados,
+            aventura_completa=aventura_completa,
             logros=logros,
             logros_desbloqueados=logros_desbloqueados
         )

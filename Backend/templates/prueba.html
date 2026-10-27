@@ -31,21 +31,27 @@
             </div>
 
             <!-- Progreso -->
-            {% set porcentaje = (((numero - 1) / total) * 100)|round|int %}
+            {# pct_antes: lo que ya respondiste. pct_despues: al elegir una opción en esta pregunta #}
+            {% set pct_antes = (((numero - 1) / total) * 100)|round|int %}
+            {% set pct_despues = ((numero / total) * 100)|round|int %}
 
             <div class="progreso-info">
                 <span>
                     Pregunta {{ numero }} de {{ total }}
                 </span>
 
-                <span>{{ porcentaje }}%</span>
+                <span class="pct">
+                    <span class="pct-antes">{{ pct_antes }}%</span>
+                    <span class="pct-despues">{{ pct_despues }}%</span>
+                </span>
             </div>
 
-            <div class="barra-progreso">
-                <div
-                    class="barra-progreso-relleno progreso-dinamico"
-                    style="width: {{ porcentaje }}%;"
-                ></div>
+            <div class="barra-segmentos" role="progressbar" aria-label="Progreso del nivel">
+                {% for i in range(1, total + 1) %}
+                    <div class="segmento {% if i < numero %}hecho{% elif i == numero %}actual{% endif %}">
+                        <div class="segmento-relleno"></div>
+                    </div>
+                {% endfor %}
             </div>
 
             <!-- Pregunta -->

@@ -3,6 +3,10 @@ from database import obtener_conexion
 
 pruebas = Blueprint("pruebas", __name__)
 
+# Cantidad de niveles que tienen preguntas.
+# El nivel 5 ya no es una prueba: es la página de resultados.
+NIVELES_PRUEBA = 4
+
 
 # =========================================
 # BUSCAR ESTUDIANTE
@@ -165,6 +169,12 @@ def inicio_prueba(id_prueba):
         if prueba is None:
             return "Prueba no encontrada"
 
+        # El nivel 5 es la página de resultados, no una prueba
+        if prueba["numero_nivel"] > NIVELES_PRUEBA:
+            return redirect(
+                url_for("pruebas.ver_resultados")
+            )
+
         # =========================================
         # BUSCAR ESTUDIANTE
         # =========================================
@@ -220,7 +230,7 @@ def inicio_prueba(id_prueba):
         # OBTENER / CREAR INTENTO
         # =========================================
 
-        id_intento = obtener_intento(
+        obtener_intento(
             cursor,
             session["id_usuario"],
             id_prueba
@@ -229,55 +239,7 @@ def inicio_prueba(id_prueba):
         conexion.commit()
 
         # =========================================
-        # MOSTRAR RESULTADOS SI TERMINÓ EL NIVEL 5
-        # =========================================
-
-        if prueba["numero_nivel"] == 5:
-
-            # Buscar los puntos obtenidos por cada área
-            cursor.execute(
-                """
-                SELECT
-                    a.id_area,
-                    a.nombre,
-                    COALESCE(SUM(oa.puntos), 0) AS puntos
-                FROM areas a
-                LEFT JOIN opcion_area oa
-                    ON oa.id_area = a.id_area
-                LEFT JOIN respuestas_usuario ru
-                    ON ru.id_opcion = oa.id_opcion
-                LEFT JOIN intentos_prueba ip
-                    ON ip.id_intento = ru.id_intento
-                    AND ip.id_estudiante = %s
-                    AND ip.completado = 1
-                    AND ip.id_intento IN (
-                        SELECT MAX(id_intento)
-                        FROM intentos_prueba
-                        WHERE id_estudiante = %s
-                        AND completado = 1
-                        GROUP BY id_prueba
-                    )
-                GROUP BY a.id_area, a.nombre
-                ORDER BY a.id_area
-                """,
-                (
-                    id_estudiante,
-                    id_estudiante
-                )
-            )
-
-            resultados = cursor.fetchall()
-
-            return render_template(
-                "prueba_finalizada.html",
-                prueba=prueba,
-                resultados=resultados,
-                resultado_final=True
-            )
-
-        
-        # =========================================
-        # SI NO ES EL NIVEL 5, ABRIR LAS PREGUNTAS
+        # ABRIR LAS PREGUNTAS
         # =========================================
 
         return redirect(
@@ -287,11 +249,9 @@ def inicio_prueba(id_prueba):
             )
         )
 
-
     finally:
         cursor.close()
         conexion.close()
-
 
 
 # =========================================
@@ -327,6 +287,12 @@ def realizar_prueba(id_prueba):
 
         if prueba is None:
             return "Prueba no encontrada"
+
+        # El nivel 5 es la página de resultados, no una prueba
+        if prueba["numero_nivel"] > NIVELES_PRUEBA:
+            return redirect(
+                url_for("pruebas.ver_resultados")
+            )
 
         # =========================================
         # BUSCAR ESTUDIANTE
@@ -678,6 +644,12 @@ def finalizar_prueba(id_prueba):
         if prueba is None:
             return "Prueba no encontrada"
 
+        # El nivel 5 es la página de resultados, no una prueba
+        if prueba["numero_nivel"] > NIVELES_PRUEBA:
+            return redirect(
+                url_for("pruebas.ver_resultados")
+            )
+
         # =========================================
         # BUSCAR ESTUDIANTE
         # =========================================
@@ -787,78 +759,236 @@ def finalizar_prueba(id_prueba):
         conexion.commit()
 
         # =========================================
-        # SI ES EL NIVEL 5, MOSTRAR RESULTADOS
+        # ¿FUE EL ÚLTIMO NIVEL CON PREGUNTAS?
         # =========================================
 
-        if prueba["numero_nivel"] == 5:
+        es_ultimo = prueba["numero_nivel"] >= NIVELES_PRUEBA
+
+        siguiente_prueba = None
+
+        if not es_ultimo:
 
             cursor.execute(
                 """
-                SELECT
-                    a.id_area,
-                    a.nombre,
-                    COALESCE(SUM(oa.puntos), 0) AS puntos
-                FROM areas a
-                LEFT JOIN opcion_area oa
-                    ON oa.id_area = a.id_area
-                LEFT JOIN respuestas_usuario ru
-                    ON ru.id_opcion = oa.id_opcion
-                LEFT JOIN intentos_prueba ip
-                    ON ip.id_intento = ru.id_intento
-                    AND ip.id_estudiante = %s
-                    AND ip.completado = 1
-                    AND ip.id_intento IN (
-                        SELECT MAX(id_intento)
-                        FROM intentos_prueba
-                        WHERE id_estudiante = %s
-                        AND completado = 1
-                        GROUP BY id_prueba
-                    )
-                GROUP BY a.id_area, a.nombre
-                ORDER BY a.id_area
+                SELECT id_prueba, nombre, numero_nivel
+                FROM pruebas
+                WHERE numero_nivel = %s
+                AND estado = 1
+                LIMIT 1
                 """,
-                (
-                    id_estudiante,
-                    id_estudiante
-                )
+                (prueba["numero_nivel"] + 1,)
             )
 
-            resultados = cursor.fetchall()
-
-            return render_template(
-                "prueba_finalizada.html",
-                prueba=prueba,
-                resultados=resultados,
-                resultado_final=True
-            )
-
-        
-        # =========================================
-        # SI NO ES EL NIVEL 5
-        # =========================================
-
-        # Buscar el siguiente nivel
-        cursor.execute(
-            """
-            SELECT id_prueba, nombre, numero_nivel
-            FROM pruebas
-            WHERE numero_nivel = %s
-            AND estado = 1
-            LIMIT 1
-            """,
-            (prueba["numero_nivel"] + 1,)
-        )
-
-        siguiente_prueba = cursor.fetchone()
+            siguiente_prueba = cursor.fetchone()
 
         # Mostrar la pantalla de nivel completado
         return render_template(
             "prueba_finalizada.html",
             prueba=prueba,
             siguiente_prueba=siguiente_prueba,
-            resultado_final=False
+            es_ultimo=es_ultimo
         )
 
+    finally:
+
+        cursor.close()
+        conexion.close()
+
+
+# =========================================
+# RESULTADOS (NIVEL 5)
+# =========================================
+
+@pruebas.route("/resultados")
+def ver_resultados():
+
+    if "id_usuario" not in session:
+        return redirect(url_for("auth.login"))
+
+    conexion = obtener_conexion()
+    cursor = conexion.cursor(dictionary=True)
+
+    try:
+
+        # =========================================
+        # BUSCAR ESTUDIANTE
+        # =========================================
+
+        id_estudiante = obtener_estudiante(
+            cursor,
+            session["id_usuario"]
+        )
+
+        if id_estudiante is None:
+            return "No se encontró el estudiante"
+
+        # =========================================
+        # BUSCAR EL INTENTO COMPLETADO DE CADA NIVEL
+        # (si hay varios, se usa el más reciente)
+        # =========================================
+
+        cursor.execute(
+            """
+            SELECT
+                p.id_prueba,
+                p.numero_nivel,
+                MAX(ip.id_intento) AS id_intento
+            FROM pruebas p
+            LEFT JOIN intentos_prueba ip
+                ON ip.id_prueba = p.id_prueba
+                AND ip.id_estudiante = %s
+                AND ip.completado = 1
+            WHERE p.estado = 1
+            AND p.numero_nivel <= %s
+            GROUP BY p.id_prueba, p.numero_nivel
+            ORDER BY p.numero_nivel
+            """,
+            (
+                id_estudiante,
+                NIVELES_PRUEBA
+            )
+        )
+
+        niveles = cursor.fetchall()
+
+        # Los resultados solo se ven con los niveles completos
+        if (
+            len(niveles) < NIVELES_PRUEBA
+            or any(n["id_intento"] is None for n in niveles)
+        ):
+            return redirect(
+                url_for("inicio_estudiante")
+            )
+
+        ids_intentos = [n["id_intento"] for n in niveles]
+
+        marcadores = ", ".join(["%s"] * len(ids_intentos))
+
+        # =========================================
+        # SUMAR LOS PUNTOS POR ÁREA
+        # Solo cuentan las opciones que esta estudiante eligió
+        # =========================================
+
+        cursor.execute(
+            f"""
+            SELECT
+                a.id_area,
+                a.nombre,
+                a.descripcion,
+                COALESCE(SUM(x.puntos), 0) AS puntos
+            FROM areas a
+            LEFT JOIN (
+                SELECT oa.id_area, oa.puntos
+                FROM respuestas_usuario ru
+                INNER JOIN opcion_area oa
+                    ON oa.id_opcion = ru.id_opcion
+                WHERE ru.id_intento IN ({marcadores})
+            ) x
+                ON x.id_area = a.id_area
+            GROUP BY a.id_area, a.nombre, a.descripcion
+            ORDER BY puntos DESC, a.nombre
+            """,
+            tuple(ids_intentos)
+        )
+
+        filas = cursor.fetchall()
+
+        total_puntos = sum(int(f["puntos"]) for f in filas)
+
+        areas = []
+
+        for posicion, fila in enumerate(filas, start=1):
+
+            puntos = int(fila["puntos"])
+
+            if total_puntos > 0:
+                porcentaje = round((puntos / total_puntos) * 100)
+            else:
+                porcentaje = 0
+
+            areas.append({
+                "id_area": fila["id_area"],
+                "posicion": posicion,
+                "nombre": fila["nombre"],
+                "descripcion": fila["descripcion"],
+                "puntos": puntos,
+                "porcentaje": porcentaje
+            })
+
+        # Áreas que empatan en el primer lugar
+        principal = areas[0] if areas and total_puntos > 0 else None
+
+        empatadas = []
+
+        if principal:
+            empatadas = [
+                a["nombre"]
+                for a in areas[1:]
+                if a["puntos"] == principal["puntos"]
+            ]
+
+        # =========================================
+        # GUARDAR EL RESULTADO LA PRIMERA VEZ QUE SE VE
+        # (así el nivel 5 queda como completado)
+        # =========================================
+
+        if principal:
+
+            cursor.execute(
+                """
+                SELECT r.id_resultado
+                FROM resultados r
+                INNER JOIN intentos_prueba ip
+                    ON ip.id_intento = r.id_intento
+                WHERE ip.id_estudiante = %s
+                LIMIT 1
+                """,
+                (id_estudiante,)
+            )
+
+            if cursor.fetchone() is None:
+
+                # Se asocia al intento del último nivel con preguntas
+                id_intento_final = niveles[-1]["id_intento"]
+
+                cursor.execute(
+                    """
+                    INSERT INTO resultados
+                    (id_intento, id_area_principal)
+                    VALUES (%s, %s)
+                    """,
+                    (
+                        id_intento_final,
+                        principal["id_area"]
+                    )
+                )
+
+                id_resultado = cursor.lastrowid
+
+                for area in areas:
+
+                    cursor.execute(
+                        """
+                        INSERT INTO resultado_area
+                        (id_resultado, id_area, puntuacion)
+                        VALUES (%s, %s, %s)
+                        """,
+                        (
+                            id_resultado,
+                            area["id_area"],
+                            area["puntos"]
+                        )
+                    )
+
+                conexion.commit()
+
+        return render_template(
+            "resultados.html",
+            areas=areas,
+            principal=principal,
+            empatadas=empatadas,
+            total_puntos=total_puntos
+        )
 
     finally:
 

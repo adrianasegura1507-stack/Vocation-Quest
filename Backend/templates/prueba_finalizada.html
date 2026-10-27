@@ -1,11 +1,10 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Prueba finalizada | Vocation Quest</title>
+    <title>Nivel completado | Vocation Quest</title>
 
     <link rel="stylesheet"
           href="{{ url_for('static', filename='css/style.css') }}">
@@ -24,24 +23,32 @@
 
             <div class="pregunta-card">
 
-                {% if resultado_final %}
+                {% if es_ultimo %}
 
-                    <h1>🏆 ¡Completaste tu aventura!</h1>
+                    <h1>🏆 ¡Completaste todas las pruebas!</h1>
 
                     <p>
-                        Has terminado todos los niveles
-                        de Vocation Quest.
+                        Terminaste el Nivel {{ prueba.numero_nivel }} -
+                        {{ prueba.nombre }}, el último con preguntas.
                     </p>
 
                     <p>
-                        ¡Ya puedes consultar tus resultados
-                        de orientación vocacional!
+                        Ya puedes descubrir qué áreas se parecen más a ti.
                     </p>
 
-                    <a href="{{ url_for('inicio_estudiante') }}"
-                       class="btn-siguiente">
-                        Ver mis resultados
-                    </a>
+                    <div class="botones-prueba">
+
+                        <a href="{{ url_for('inicio_estudiante') }}"
+                           class="btn-anterior">
+                            🗺️ Volver a los niveles
+                        </a>
+
+                        <a href="{{ url_for('pruebas.ver_resultados') }}"
+                           class="btn-siguiente">
+                            Ver mis resultados →
+                        </a>
+
+                    </div>
 
                 {% else %}
 

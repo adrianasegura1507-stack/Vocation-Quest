@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Mis resultados | Vocation Quest</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+    <main class="prueba-page">
+
+        <header class="logo">
+            <span class="logo-icon">✦</span>
+            <span>Vocation Quest</span>
+        </header>
+
+        <section class="prueba-container">
+
+            <div class="prueba-header">
+                <p class="etiqueta">NIVEL 5</p>
+
+                <h1>Mi resultado</h1>
+
+                <p>Así se distribuyeron tus respuestas entre las áreas profesionales.</p>
+            </div>
+
+            {% if principal %}
+
+                <!-- Área principal -->
+
+                <div class="resultado-principal">
+
+                    <p class="resultado-etiqueta">Tu área con más afinidad</p>
+
+                    <h2>{{ principal.nombre }}</h2>
+
+                    <p>{{ principal.descripcion }}</p>
+
+                    {% if empatadas %}
+                        <p class="resultado-empate">
+                            También empataste con:
+                            {{ empatadas|join(", ") }}.
+                        </p>
+                    {% endif %}
+
+                </div>
+
+                <!-- Todas las áreas -->
+
+                <div class="pregunta-card">
+
+                    <h2>Todas las áreas</h2>
+
+                    <div class="resultado-lista">
+
+                        {% for area in areas %}
+
+                            <div class="resultado-fila">
+
+                                <div class="resultado-nombre">
+                                    <span>
+                                        {% if area.posicion == 1 %}🥇
+                                        {% elif area.posicion == 2 %}🥈
+                                        {% elif area.posicion == 3 %}🥉
+                                        {% endif %}
+                                        {{ area.nombre }}
+                                    </span>
+
+                                    <strong>{{ area.porcentaje }}%</strong>
+                                </div>
+
+                                <progress
+                                    class="resultado-barra"
+                                    value="{{ area.porcentaje }}"
+                                    max="100"
+                                ></progress>
+
+                            </div>
+
+                        {% endfor %}
+
+                    </div>
+
+                    <div class="resultado-aviso">
+                        <strong>💡 Ten en cuenta</strong>
+                        Estos resultados son una guía para explorar tus
+                        intereses. No reemplazan la orientación de un
+                        psicorientador.
+                    </div>
+
+                    <div class="botones-prueba">
+
+                        <a href="{{ url_for('inicio_estudiante') }}"
+                           class="btn-anterior">
+                            🗺️ Volver a mi aventura
+                        </a>
+
+                    </div>
+
+                </div>
+
+            {% else %}
+
+                <div class="pregunta-card">
+
+                    <h2>No pudimos calcular tus resultados</h2>
+
+                    <p>
+                        Tus respuestas todavía no tienen puntos asociados
+                        a las áreas. Avísale a tu docente o al equipo de
+                        Vocation Quest.
+                    </p>
+
+                    <div class="botones-prueba">
+
+                        <a href="{{ url_for('inicio_estudiante') }}"
+                           class="btn-anterior">
+                            🗺️ Volver a mi aventura
+                        </a>
+
+                    </div>
+
+                </div>
+
+            {% endif %}
+
+        </section>
+
+    </main>
+
+</body>
+</html>

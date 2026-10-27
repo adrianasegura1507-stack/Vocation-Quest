@@ -15,7 +15,7 @@
             </div>
         </div>
 
-    {% elif estado == 'completado' %}
+    {% elif estado == 'completado' and numero != 5 %}
 
         <div class="level {{ clase }} done" tabindex="0">
             <div class="level-number">{{ numero }}</div>
@@ -28,15 +28,31 @@
 
     {% else %}
 
-        <a href="{{ url_for('pruebas.inicio_prueba', id_prueba=nivel.id_prueba) }}"
-           class="level {{ clase }}" tabindex="0">
+        {% if numero == 5 %}
+            {% set destino = url_for('pruebas.ver_resultados') %}
+        {% else %}
+            {% set destino = url_for('pruebas.inicio_prueba', id_prueba=nivel.id_prueba) %}
+        {% endif %}
+
+        <a href="{{ destino }}"
+           class="level {{ clase }}{% if estado == 'completado' %} done{% endif %}" tabindex="0">
             <div class="level-number">{{ numero }}</div>
             <div class="level-name">{{ nombre }}</div>
             <div class="level-state">
-                🔓 {% if estado == 'progreso' %}En progreso ({{ nivel.respondidas }}/{{ nivel.total }}){% else %}Disponible{% endif %}
+                {% if estado == 'completado' %}
+                    ✅ Completado
+                {% elif estado == 'progreso' %}
+                    🔓 En progreso ({{ nivel.respondidas }}/{{ nivel.total }})
+                {% else %}
+                    🔓 Disponible
+                {% endif %}
             </div>
             <div class="level-tooltip">
-                {{ nivel.descripcion or "¡Haz clic para comenzar este nivel!" }}
+                {% if estado == 'completado' %}
+                    Puedes volver a ver tus resultados cuando quieras.
+                {% else %}
+                    {{ nivel.descripcion or "¡Haz clic para comenzar este nivel!" }}
+                {% endif %}
             </div>
         </a>
 
@@ -1122,7 +1138,7 @@
 
                         {% if mision %}
                             <span>Nivel {{ mision.numero }}</span>
-                        {% elif todos_completados %}
+                        {% elif aventura_completa %}
                             <span>¡Completa!</span>
                         {% else %}
                             <span>Inicio</span>
@@ -1132,7 +1148,10 @@
                     {% if mision %}
 
                         <p class="panel-description">
-                            {% if mision.estado == 'progreso' %}
+                            {% if mision.numero == 5 %}
+                                Completaste todas las pruebas. Solo falta
+                                descubrir tu resultado.
+                            {% elif mision.estado == 'progreso' %}
                                 Ya empezaste este nivel. ¡Retómalo donde lo dejaste!
                             {% else %}
                                 Cada aventura comienza con un primer paso.
@@ -1160,11 +1179,19 @@
                                 ></progress>
                             {% endif %}
 
+                            {% if mision.numero == 5 %}
+                                {% set destino_mision = url_for('pruebas.ver_resultados') %}
+                            {% else %}
+                                {% set destino_mision = url_for('pruebas.inicio_prueba', id_prueba=mision.id_prueba) %}
+                            {% endif %}
+
                             <a
-                                href="{{ url_for('pruebas.inicio_prueba', id_prueba=mision.id_prueba) }}"
+                                href="{{ destino_mision }}"
                                 class="mission-button"
                             >
-                                {% if mision.estado == 'progreso' %}
+                                {% if mision.numero == 5 %}
+                                    Ver mis resultados
+                                {% elif mision.estado == 'progreso' %}
                                     Continuar nivel {{ mision.numero }}
                                 {% else %}
                                     Empezar nivel {{ mision.numero }}
@@ -1174,7 +1201,7 @@
 
                         </div>
 
-                    {% elif todos_completados %}
+                    {% elif aventura_completa %}
 
                         <p class="panel-description">
                             Terminaste todos los niveles de Vocation Quest.
@@ -1189,9 +1216,17 @@
                             <h3>🏆 ¡Lo lograste!</h3>
 
                             <p>
-                                Completaste los cinco niveles. Muy pronto
-                                podrás ver aquí tus resultados.
+                                Completaste los cinco niveles. Puedes volver
+                                a ver tus resultados cuando quieras.
                             </p>
+
+                            <a
+                                href="{{ url_for('pruebas.ver_resultados') }}"
+                                class="mission-button"
+                            >
+                                Ver mis resultados
+                                <span>→</span>
+                            </a>
 
                         </div>
 
