@@ -11,6 +11,48 @@ app.register_blueprint(auth)
 app.register_blueprint(pruebas)
 
 
+# =========================================
+# ICONOS DE LOS LOGROS
+# =========================================
+# La tabla "logros" no tiene columna de icono, así que
+# lo elegimos según el campo "tipo" del logro.
+
+ICONOS_LOGROS = {
+    "preguntas_1": "👣",
+    "niveles_1": "🌟",
+    "preguntas_10": "🔍",
+    "niveles_3": "🧭",
+    "preguntas_20": "💪",
+    "niveles_5": "🏅",
+}
+
+
+def logro_cumplido(tipo, niveles_completados, preguntas_respondidas):
+    """
+    El campo "tipo" de cada logro tiene este formato:
+        niveles_3    -> completar 3 niveles
+        preguntas_10 -> responder 10 preguntas
+    """
+
+    if not tipo or "_" not in tipo:
+        return False
+
+    clase, cantidad = tipo.split("_", 1)
+
+    try:
+        cantidad = int(cantidad)
+    except ValueError:
+        return False
+
+    if clase == "niveles":
+        return niveles_completados >= cantidad
+
+    if clase == "preguntas":
+        return preguntas_respondidas >= cantidad
+
+    return False
+
+
 @app.route("/")
 def inicio():
     return render_template("index.html")
@@ -51,7 +93,11 @@ def inicio_estudiante():
                 progreso_general=0,
                 preguntas_respondidas=0,
                 preguntas_totales=0,
-                niveles={}
+                niveles={},
+                mision=None,
+                todos_completados=False,
+                logros=[],
+                logros_desbloqueados=0
             )
 
         id_estudiante = estudiante["id_estudiante"]
@@ -62,14 +108,14 @@ def inicio_estudiante():
 
         cursor.execute(
             """
-            SELECT id_prueba, nombre, numero_nivel
+            SELECT id_prueba, nombre, descripcion, numero_nivel
             FROM pruebas
             WHERE estado = 1
             ORDER BY numero_nivel
             """
         )
 
-        pruebas = cursor.fetchall()
+        lista_pruebas = cursor.fetchall()
 
         niveles = {}
 
@@ -80,7 +126,7 @@ def inicio_estudiante():
         # 3. Revisar el progreso de cada nivel
         # ---------------------------------------------------------
 
-        for prueba in pruebas:
+        for prueba in lista_pruebas:
 
             id_prueba = prueba["id_prueba"]
             numero_nivel = prueba["numero_nivel"]
@@ -104,7 +150,10 @@ def inicio_estudiante():
             total_preguntas = resultado_total["total"] or 0
 
             # -----------------------------------------------------
-            # Buscar el último intento del estudiante
+            # Buscar el intento más relevante del estudiante.
+            # Si existe uno completado, se usa ese; si no,
+            # el más reciente. (Así coincide con la regla de
+            # desbloqueo de Backend/routes/pruebas.py)
             # -----------------------------------------------------
 
             cursor.execute(
@@ -113,7 +162,7 @@ def inicio_estudiante():
                 FROM intentos_prueba
                 WHERE id_estudiante = %s
                 AND id_prueba = %s
-                ORDER BY id_intento DESC
+                ORDER BY completado DESC, id_intento DESC
                 LIMIT 1
                 """,
                 (id_estudiante, id_prueba)
@@ -173,16 +222,12 @@ def inicio_estudiante():
 
                 estado = "completado"
 
-            elif respondidas > 0:
-
-                estado = "progreso"
-
             else:
 
                 # El nivel 1 siempre está disponible
                 if numero_nivel == 1:
 
-                    estado = "disponible"
+                    desbloqueado = True
 
                 else:
 
@@ -191,13 +236,17 @@ def inicio_estudiante():
                         numero_nivel - 1
                     )
 
-                    if (
+                    desbloqueado = bool(
                         nivel_anterior
                         and nivel_anterior["completado"]
-                    ):
-                        estado = "disponible"
-                    else:
-                        estado = "bloqueado"
+                    )
+
+                if not desbloqueado:
+                    estado = "bloqueado"
+                elif respondidas > 0:
+                    estado = "progreso"
+                else:
+                    estado = "disponible"
 
             # -----------------------------------------------------
             # Guardar información del nivel
@@ -205,7 +254,9 @@ def inicio_estudiante():
 
             niveles[numero_nivel] = {
                 "id_prueba": id_prueba,
+                "numero": numero_nivel,
                 "nombre": prueba["nombre"],
+                "descripcion": prueba["descripcion"],
                 "respondidas": respondidas,
                 "total": total_preguntas,
                 "porcentaje": porcentaje,
@@ -238,7 +289,101 @@ def inicio_estudiante():
             progreso_general = 0
 
         # ---------------------------------------------------------
-        # 5. Mostrar página del estudiante
+        # 5. Misión actual: el primer nivel que se puede jugar
+        #    y todavía no está completado
+        # ---------------------------------------------------------
+
+        mision = None
+
+        for numero in sorted(niveles):
+
+            nivel = niveles[numero]
+
+            if nivel["estado"] in ("disponible", "progreso"):
+                mision = nivel
+                break
+
+        todos_completados = (
+            len(niveles) > 0
+            and all(n["completado"] for n in niveles.values())
+        )
+
+        # ---------------------------------------------------------
+        # 6. Logros: revisar cuáles cumple el estudiante
+        #    y guardar los nuevos en estudiante_logro
+        # ---------------------------------------------------------
+
+        niveles_completados = sum(
+            1 for n in niveles.values() if n["completado"]
+        )
+
+        cursor.execute(
+            """
+            SELECT id_logro, nombre, descripcion, puntos, tipo
+            FROM logros
+            ORDER BY id_logro
+            """
+        )
+
+        catalogo_logros = cursor.fetchall()
+
+        cursor.execute(
+            """
+            SELECT id_logro
+            FROM estudiante_logro
+            WHERE id_estudiante = %s
+            """,
+            (id_estudiante,)
+        )
+
+        logros_ya_obtenidos = {
+            fila["id_logro"] for fila in cursor.fetchall()
+        }
+
+        hay_logros_nuevos = False
+
+        for logro in catalogo_logros:
+
+            cumplido = logro_cumplido(
+                logro["tipo"],
+                niveles_completados,
+                preguntas_respondidas_total
+            )
+
+            if cumplido and logro["id_logro"] not in logros_ya_obtenidos:
+
+                cursor.execute(
+                    """
+                    INSERT IGNORE INTO estudiante_logro
+                    (id_estudiante, id_logro)
+                    VALUES (%s, %s)
+                    """,
+                    (id_estudiante, logro["id_logro"])
+                )
+
+                logros_ya_obtenidos.add(logro["id_logro"])
+                hay_logros_nuevos = True
+
+        if hay_logros_nuevos:
+            conexion.commit()
+
+        logros = []
+
+        for logro in catalogo_logros:
+
+            logros.append({
+                "nombre": logro["nombre"],
+                "descripcion": logro["descripcion"],
+                "icono": ICONOS_LOGROS.get(logro["tipo"], "🏅"),
+                "desbloqueado": logro["id_logro"] in logros_ya_obtenidos
+            })
+
+        logros_desbloqueados = sum(
+            1 for l in logros if l["desbloqueado"]
+        )
+
+        # ---------------------------------------------------------
+        # 7. Mostrar página del estudiante
         # ---------------------------------------------------------
 
         return render_template(
@@ -246,7 +391,11 @@ def inicio_estudiante():
             progreso_general=progreso_general,
             preguntas_respondidas=preguntas_respondidas_total,
             preguntas_totales=preguntas_totales_total,
-            niveles=niveles
+            niveles=niveles,
+            mision=mision,
+            todos_completados=todos_completados,
+            logros=logros,
+            logros_desbloqueados=logros_desbloqueados
         )
 
     finally:
