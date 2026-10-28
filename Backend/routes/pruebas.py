@@ -460,12 +460,12 @@ def realizar_prueba(id_prueba):
             id_opcion = request.form.get("opcion")
 
             if not id_opcion:
-                return "Debes seleccionar una opción"
+                return redirect(url_for("pruebas.realizar_prueba", id_prueba=id_prueba, pregunta=numero, aviso="elige"))
 
             try:
                 id_opcion = int(id_opcion)
             except ValueError:
-                return "Opción inválida"
+                return redirect(url_for("pruebas.realizar_prueba", id_prueba=id_prueba, pregunta=numero, aviso="invalida"))
 
             id_pregunta = pregunta_actual[
                 "id_pregunta"
@@ -581,6 +581,7 @@ def realizar_prueba(id_prueba):
             opciones=opciones,
             numero=numero,
             total=len(preguntas),
+            aviso=request.args.get("aviso"),
             respuesta_guardada=respuestas.get(
                 pregunta_actual["id_pregunta"]
             )
