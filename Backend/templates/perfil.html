@@ -1,0 +1,338 @@
+{% extends "base_cuenta.html" %}
+
+{% block titulo %}Mi perfil{% endblock %}
+
+{% block estilos %}
+<style>
+    .resumen {
+        display: flex;
+        align-items: center;
+        gap: 22px;
+        flex-wrap: wrap;
+    }
+
+    .avatar-perfil {
+        width: 96px;
+        height: 96px;
+        flex-shrink: 0;
+        background: linear-gradient(145deg, #d9f3c8, #bce9ca);
+        border: 6px solid white;
+        border-radius: 30px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 50px;
+        box-shadow: 0 8px 20px rgba(68, 112, 77, 0.12);
+        transform: rotate(3deg);
+    }
+
+    .resumen-texto h1 {
+        color: var(--morado-principal);
+        font-size: 26px;
+        margin-bottom: 4px;
+    }
+
+    .resumen-texto .correo {
+        color: var(--texto-suave);
+        font-size: 14px;
+        word-break: break-all;
+    }
+
+    .etiqueta-rol {
+        display: inline-block;
+        background: #e8f8ed;
+        color: var(--verde-oscuro);
+        padding: 5px 11px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+
+    .datos-lista {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 14px;
+        margin-top: 22px;
+    }
+
+    .dato {
+        background: #fcfbfe;
+        border: 1px solid var(--borde);
+        border-radius: 15px;
+        padding: 14px 16px;
+    }
+
+    .dato span {
+        display: block;
+        color: var(--texto-suave);
+        font-size: 12px;
+        margin-bottom: 4px;
+    }
+
+    .dato strong {
+        color: var(--morado-principal);
+        font-size: 15px;
+    }
+
+    .zona-cuenta {
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+    }
+
+    .zona-cuenta .fila {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 14px;
+        flex-wrap: wrap;
+    }
+
+    .zona-cuenta .fila p {
+        color: var(--texto-suave);
+        font-size: 13px;
+        line-height: 1.4;
+        max-width: 420px;
+    }
+
+    @media (max-width: 600px) {
+        .datos-lista {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block contenido %}
+
+    <!-- Mensajes de "se guardó" o de aviso -->
+    {% with mensajes = get_flashed_messages(with_categories=true) %}
+        {% for categoria, mensaje in mensajes %}
+            <div class="aviso {{ categoria }}" role="status">{{ mensaje }}</div>
+        {% endfor %}
+    {% endwith %}
+
+
+    <!-- =========================
+         RESUMEN DEL PERFIL
+    ========================= -->
+
+    <section class="panel">
+
+        <div class="resumen">
+
+            <div class="avatar-perfil" aria-hidden="true">🐱‍🚀</div>
+
+            <div class="resumen-texto">
+                <span class="etiqueta-rol">
+                    {% if es_estudiante %}Estudiante{% else %}Administrador{% endif %}
+                </span>
+
+                <h1>{{ usuario.nombre }}</h1>
+                <p class="correo">{{ usuario.correo }}</p>
+            </div>
+
+        </div>
+
+        <div class="datos-lista">
+
+            {% if es_estudiante %}
+            <div class="dato">
+                <span>Fecha de nacimiento</span>
+                {% if usuario.fecha_nacimiento %}
+                    <strong>{{ usuario.fecha_nacimiento.strftime('%d/%m/%Y') }}
+                        ({{ edad }} años)</strong>
+                {% else %}
+                    <strong>Sin registrar</strong>
+                {% endif %}
+            </div>
+            {% endif %}
+
+            <div class="dato">
+                <span>Miembro desde</span>
+                <strong>
+                    {% if usuario.fecha_registro %}
+                        {{ usuario.fecha_registro.strftime('%d/%m/%Y') }}
+                    {% else %}
+                        —
+                    {% endif %}
+                </strong>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================
+         EDITAR MIS DATOS
+    ========================= -->
+
+    <section class="panel">
+
+        <h2>Editar mis datos</h2>
+        <p class="descripcion">
+            Cambia tu nombre, tu correo
+            {% if es_estudiante %}o tu fecha de nacimiento{% endif %}
+            y pulsa «Guardar cambios».
+        </p>
+
+        {% if es_estudiante and not usuario.fecha_nacimiento %}
+            <div class="aviso info">
+                Aún no tienes fecha de nacimiento registrada.
+                Complétala aquí abajo.
+            </div>
+        {% endif %}
+
+        {% if error_datos %}
+            <div class="aviso error" role="alert">{{ error_datos }}</div>
+        {% endif %}
+
+        <form action="{{ url_for('perfil.editar_datos') }}" method="POST" novalidate>
+
+            <div class="campo">
+                <label for="nombre">Nombre</label>
+                <input
+                    type="text"
+                    id="nombre"
+                    name="nombre"
+                    required
+                    maxlength="100"
+                    value="{{ datos.get('nombre', '') }}"
+                >
+            </div>
+
+            <div class="campo">
+                <label for="correo">Correo electrónico</label>
+                <input
+                    type="email"
+                    id="correo"
+                    name="correo"
+                    required
+                    maxlength="150"
+                    value="{{ datos.get('correo', '') }}"
+                >
+            </div>
+
+            {% if es_estudiante %}
+            <div class="campo">
+                <label for="fecha_nacimiento">Fecha de nacimiento</label>
+                <input
+                    type="date"
+                    id="fecha_nacimiento"
+                    name="fecha_nacimiento"
+                    required
+                    min="{{ fecha_min }}"
+                    max="{{ fecha_max }}"
+                    value="{{ datos.get('fecha_nacimiento', '') }}"
+                >
+                <small>
+                    Debes tener entre {{ edad_minima }} y {{ edad_maxima }} años.
+                </small>
+            </div>
+            {% endif %}
+
+            <button type="submit" class="boton boton-principal">
+                Guardar cambios
+            </button>
+
+        </form>
+
+    </section>
+
+
+    <!-- =========================
+         CAMBIAR CONTRASEÑA
+    ========================= -->
+
+    <section class="panel">
+
+        <h2>Cambiar contraseña</h2>
+        <p class="descripcion">
+            Escribe tu contraseña actual y elige una nueva
+            de mínimo 8 caracteres.
+        </p>
+
+        {% if error_contrasena %}
+            <div class="aviso error" role="alert">{{ error_contrasena }}</div>
+        {% endif %}
+
+        <form action="{{ url_for('perfil.cambiar_contrasena') }}" method="POST" novalidate>
+
+            <div class="campo">
+                <label for="contrasena_actual">Contraseña actual</label>
+                <input
+                    type="password"
+                    id="contrasena_actual"
+                    name="contrasena_actual"
+                    autocomplete="current-password"
+                >
+            </div>
+
+            <div class="campo">
+                <label for="contrasena_nueva">Contraseña nueva</label>
+                <input
+                    type="password"
+                    id="contrasena_nueva"
+                    name="contrasena_nueva"
+                    autocomplete="new-password"
+                >
+            </div>
+
+            <div class="campo">
+                <label for="contrasena_confirmar">Repite la contraseña nueva</label>
+                <input
+                    type="password"
+                    id="contrasena_confirmar"
+                    name="contrasena_confirmar"
+                    autocomplete="new-password"
+                >
+            </div>
+
+            <button type="submit" class="boton boton-principal">
+                Cambiar contraseña
+            </button>
+
+        </form>
+
+    </section>
+
+
+    <!-- =========================
+         SESIÓN Y CUENTA
+    ========================= -->
+
+    <section class="panel">
+
+        <h2>Mi sesión</h2>
+        <p class="descripcion">Opciones de tu cuenta.</p>
+
+        <div class="zona-cuenta">
+
+            <div class="fila">
+                <p>Cierra tu sesión en este dispositivo.</p>
+
+                <a href="{{ url_for('auth.logout') }}" class="boton boton-suave">
+                    Cerrar sesión
+                </a>
+            </div>
+
+            {% if es_estudiante %}
+            <div class="fila">
+                <p>
+                    Si eliminas tu cuenta, se borrarán también tu progreso,
+                    tus resultados y tus logros.
+                </p>
+
+                <a href="{{ url_for('perfil.eliminar_cuenta') }}" class="boton boton-borde-peligro">
+                    Eliminar mi cuenta
+                </a>
+            </div>
+            {% endif %}
+
+        </div>
+
+    </section>
+
+{% endblock %}

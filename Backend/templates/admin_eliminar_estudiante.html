@@ -1,0 +1,43 @@
+{% extends "base_admin.html" %}
+
+{% block titulo %}Eliminar estudiante{% endblock %}
+
+{% block contenido_admin %}
+
+    <section class="panel formulario-estrecho">
+
+        <h2>¿Eliminar la cuenta de {{ estudiante.nombre }}?</h2>
+
+        <p class="descripcion">{{ estudiante.correo }}</p>
+
+        <div class="aviso error">
+            Esta acción no se puede deshacer. Se borrarán para siempre la
+            cuenta, el progreso, las respuestas, los resultados y los logros
+            de este estudiante.
+        </div>
+
+        <div class="aviso info">
+            Si solo quieres que no pueda entrar por ahora, es mejor
+            <strong>desactivar</strong> la cuenta: sus datos se conservan y
+            se puede volver a activar.
+        </div>
+
+        <form method="POST">
+
+            <div class="acciones">
+
+                <button type="submit" class="boton boton-peligro">
+                    Sí, eliminar para siempre
+                </button>
+
+                <a href="{{ url_for('admin.lista_estudiantes') }}" class="boton boton-suave">
+                    No, volver a la lista
+                </a>
+
+            </div>
+
+        </form>
+
+    </section>
+
+{% endblock %}

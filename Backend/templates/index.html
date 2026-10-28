@@ -4,25 +4,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vocation Quest</title>
+
+    <title>Vocation Quest | Descubre tu camino</title>
 
     <style>
         * {
-            box-sizing: border-box;
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
             font-family: Arial, sans-serif;
         }
 
         body {
             background-color: #f7f7fb;
             color: #29213d;
+            line-height: 1.6;
         }
 
         header {
             background: linear-gradient(135deg, #542b82, #7544a8);
             color: white;
-            padding: 25px 8%;
+            padding: 20px 8%;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -30,20 +32,274 @@
             flex-wrap: wrap;
         }
 
-        header h1 {
-            font-size: 28px;
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-symbol {
+            width: 45px;
+            height: 45px;
+            background-color: #8ed6a5;
+            color: #542b82;
+            border-radius: 14px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .logo h1 {
+            font-size: 26px;
+        }
+
+        .logo p {
+            font-size: 12px;
+            color: #e8dff3;
+        }
+
+        nav {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
         }
 
         nav a {
             color: white;
             text-decoration: none;
-            margin-left: 18px;
+            padding: 10px 16px;
+            border-radius: 10px;
             font-weight: bold;
+            transition: 0.3s;
+        }
+
+        nav a:hover {
+            background-color: rgba(255, 255, 255, 0.15);
+        }
+
+        nav .nav-button {
+            background-color: #8ed6a5;
+            color: #214c31;
+        }
+
+        nav .nav-button:hover {
+            background-color: #72c58e;
         }
 
         .hero {
+            min-height: 520px;
+            padding: 70px 8%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 50px;
+            flex-wrap: wrap;
+            background:
+                radial-gradient(circle at 85% 20%, #e8dff3 0, transparent 28%),
+                white;
+        }
+
+        .hero-text {
+            max-width: 620px;
+        }
+
+        .tag {
+            display: inline-block;
+            background-color: #e7f7ec;
+            color: #317348;
+            padding: 8px 14px;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .hero h2 {
+            color: #542b82;
+            font-size: 48px;
+            line-height: 1.15;
+            margin-bottom: 22px;
+        }
+
+        .hero h2 span {
+            color: #72b98b;
+        }
+
+        .hero p {
+            font-size: 18px;
+            color: #5c536b;
+            margin-bottom: 28px;
+            max-width: 570px;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 14px 23px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .primary-button {
+            background-color: #8ed6a5;
+            color: #214c31;
+        }
+
+        .primary-button:hover {
+            background-color: #72c58e;
+            transform: translateY(-3px);
+        }
+
+        .secondary-button {
+            background-color: #eee5f8;
+            color: #542b82;
+        }
+
+        .secondary-button:hover {
+            background-color: #dfd0ef;
+            transform: translateY(-3px);
+        }
+
+        .hero-visual {
+            width: 350px;
+            min-height: 350px;
+            background: linear-gradient(145deg, #eee5f8, #e3f5e9);
+            border-radius: 35px;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            box-shadow: 0 15px 35px rgba(84, 43, 130, 0.12);
+        }
+
+        .hero-icon {
+            width: 105px;
+            height: 105px;
+            background-color: #542b82;
+            color: white;
+            border-radius: 32px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 52px;
+            margin-bottom: 22px;
+        }
+
+        .hero-visual h3 {
+            color: #542b82;
+            font-size: 24px;
+            margin-bottom: 12px;
+        }
+
+        .hero-visual p {
+            font-size: 15px;
+            margin-bottom: 0;
+        }
+
+        section {
             padding: 65px 8%;
-            background: white;
+        }
+
+        .section-heading {
+            text-align: center;
+            max-width: 720px;
+            margin: 0 auto 40px;
+        }
+
+        .section-heading h2 {
+            color: #542b82;
+            font-size: 34px;
+            margin-bottom: 12px;
+        }
+
+        .section-heading p {
+            color: #665d74;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 24px;
+        }
+
+        .card {
+            background-color: white;
+            padding: 28px;
+            border-radius: 20px;
+            border: 1px solid #eee8f5;
+            box-shadow: 0 7px 20px rgba(41, 33, 61, 0.06);
+            transition: 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 12px 25px rgba(41, 33, 61, 0.10);
+        }
+
+        .card-icon {
+            width: 55px;
+            height: 55px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #e7f7ec;
+            color: #317348;
+            border-radius: 16px;
+            font-size: 26px;
+            margin-bottom: 20px;
+        }
+
+        .card h3 {
+            color: #542b82;
+            font-size: 21px;
+            margin-bottom: 12px;
+        }
+
+        .card p {
+            color: #665d74;
+            font-size: 15px;
+        }
+
+        .steps-section {
+            background-color: #eee5f8;
+        }
+
+        .step-card {
+            text-align: center;
+            border: none;
+        }
+
+        .step-number {
+            width: 55px;
+            height: 55px;
+            background-color: #542b82;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            font-weight: bold;
+            margin: 0 auto 20px;
+        }
+
+        .result-box {
+            background: linear-gradient(135deg, #542b82, #7544a8);
+            color: white;
+            border-radius: 28px;
+            padding: 45px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -51,144 +307,118 @@
             flex-wrap: wrap;
         }
 
-        .hero-text {
-            max-width: 600px;
+        .result-text {
+            max-width: 650px;
         }
 
-        .hero h2 {
-            color: #542b82;
-            font-size: 38px;
-            margin-bottom: 18px;
-        }
-
-        .hero p {
-            font-size: 18px;
-            line-height: 1.6;
-            margin-bottom: 25px;
-        }
-
-        .button {
-            display: inline-block;
-            background-color: #8ed6a5;
-            color: #1f4930;
-            padding: 14px 25px;
-            border-radius: 12px;
-            text-decoration: none;
-            font-weight: bold;
-            transition: 0.3s;
-        }
-
-        .button:hover {
-            background-color: #72c58e;
-            transform: translateY(-3px);
-        }
-
-        .hero-card {
-            background-color: #eee5f8;
-            padding: 30px;
-            border-radius: 20px;
-            max-width: 330px;
-            text-align: center;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-        }
-
-        .hero-card h3 {
-            color: #542b82;
-            margin-bottom: 12px;
-        }
-
-        section {
-            padding: 45px 8%;
-        }
-
-        section h2 {
-            text-align: center;
-            color: #542b82;
-            margin-bottom: 30px;
-            font-size: 30px;
-        }
-
-        .cards {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 22px;
-        }
-
-        .card {
-            background-color: white;
-            padding: 25px;
-            border-radius: 16px;
-            border-top: 5px solid #8ed6a5;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
-            transition: 0.3s;
-        }
-
-        .card:hover {
-            transform: translateY(-6px);
-        }
-
-        .card h3 {
-            color: #542b82;
-            margin-bottom: 12px;
-        }
-
-        .card p {
-            line-height: 1.5;
-        }
-
-        .steps .card {
-            text-align: center;
-        }
-
-        .number {
-            display: inline-flex;
-            justify-content: center;
-            align-items: center;
-            width: 45px;
-            height: 45px;
-            background-color: #542b82;
-            color: white;
-            border-radius: 50%;
-            font-size: 20px;
-            font-weight: bold;
+        .result-text h2 {
+            font-size: 32px;
             margin-bottom: 15px;
+        }
+
+        .result-text p {
+            color: #eee5f8;
+        }
+
+        .result-list {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(130px, 1fr));
+            gap: 12px;
+            min-width: 260px;
+        }
+
+        .result-item {
+            background-color: rgba(255, 255, 255, 0.13);
+            padding: 15px;
+            border-radius: 12px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .faq {
+            max-width: 850px;
+            margin: 0 auto;
         }
 
         details {
             background-color: white;
-            margin: 12px auto;
-            padding: 18px;
-            border-radius: 12px;
-            max-width: 850px;
-            cursor: pointer;
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+            margin-bottom: 14px;
+            padding: 20px 24px;
+            border-radius: 14px;
+            border: 1px solid #eee8f5;
+            box-shadow: 0 4px 12px rgba(41, 33, 61, 0.05);
         }
 
         summary {
             color: #542b82;
             font-weight: bold;
+            cursor: pointer;
         }
 
         details p {
-            margin-top: 12px;
-            line-height: 1.5;
+            color: #665d74;
+            margin-top: 14px;
+        }
+
+        .final-section {
+            text-align: center;
+            background-color: white;
+        }
+
+        .final-section h2 {
+            color: #542b82;
+            font-size: 34px;
+            margin-bottom: 15px;
+        }
+
+        .final-section p {
+            max-width: 650px;
+            margin: 0 auto 25px;
+            color: #665d74;
         }
 
         footer {
             background-color: #542b82;
             color: white;
             text-align: center;
-            padding: 25px;
-            margin-top: 20px;
+            padding: 28px 8%;
         }
 
-        @media (max-width: 600px) {
+        footer p {
+            font-size: 14px;
+        }
+
+        @media (max-width: 700px) {
+            .hero {
+                padding-top: 45px;
+                padding-bottom: 45px;
+            }
+
             .hero h2 {
-                font-size: 30px;
+                font-size: 36px;
+            }
+
+            .hero-visual {
+                width: 100%;
+                max-width: 350px;
+                margin: 0 auto;
+            }
+
+            .result-box {
+                padding: 30px;
+            }
+
+            .result-list {
+                width: 100%;
+                min-width: 0;
+            }
+
+            nav {
+                width: 100%;
             }
 
             nav a {
-                margin-left: 8px;
+                padding: 8px 10px;
             }
         }
     </style>
@@ -197,11 +427,18 @@
 <body>
 
     <header>
-        <h1>Vocation Quest</h1>
+        <div class="logo">
+            <div class="logo-symbol">VQ</div>
+
+            <div>
+                <h1>Vocation Quest</h1>
+                <p>Explora tus intereses, descubre tu camino</p>
+            </div>
+        </div>
 
         <nav>
             <a href="/login">Iniciar sesión</a>
-            <a href="/registro">Registrarse</a>
+            <a href="/registro" class="nav-button">Registrarse</a>
         </nav>
     </header>
 
@@ -209,171 +446,242 @@
 
         <section class="hero">
             <div class="hero-text">
-                <h2>Descubre tu camino vocacional</h2>
+                <span class="tag">Tu aventura vocacional comienza aquí</span>
+
+                <h2>
+                    Descubre tu camino,
+                    <span>construye tu futuro.</span>
+                </h2>
 
                 <p>
                     Vocation Quest es una aplicación de orientación vocacional
-                    que te ayuda a conocer tus intereses, descubrir tus habilidades
-                    y explorar diferentes opciones para tu futuro académico.
+                    que te ayuda a conocer tus intereses, explorar tus habilidades
+                    y descubrir diferentes opciones para tu futuro académico.
                 </p>
 
-                <a href="/registro" class="button">Comenzar mi aventura</a>
+                <div class="hero-buttons">
+                    <a href="/registro" class="button primary-button">
+                        Comenzar mi aventura
+                    </a>
+
+                    <a href="/login" class="button secondary-button">
+                        Ya tengo una cuenta
+                    </a>
+                </div>
             </div>
 
-            <div class="hero-card">
-                <h3>¿Qué encontrarás?</h3>
+            <div class="hero-visual">
+                <div class="hero-icon">✦</div>
+
+                <h3>Tu futuro es una aventura</h3>
+
                 <p>
-                    Pruebas interactivas, resultados personalizados,
-                    carreras, instituciones, programas de estudio,
-                    puntos y logros.
+                    Responde pruebas, descubre áreas vocacionales,
+                    explora opciones académicas y avanza a tu propio ritmo.
                 </p>
             </div>
         </section>
 
         <section>
-            <h2>¿Para qué sirve Vocation Quest?</h2>
+            <div class="section-heading">
+                <h2>¿Qué puedes hacer en Vocation Quest?</h2>
+
+                <p>
+                    Conoce las herramientas que te ayudarán a explorar
+                    diferentes posibilidades para tu futuro.
+                </p>
+            </div>
 
             <div class="cards">
+
                 <div class="card">
+                    <div class="card-icon">✦</div>
+
                     <h3>Conoce tus intereses</h3>
+
                     <p>
                         Responde diferentes preguntas para identificar
-                        las áreas que más se relacionan contigo.
+                        las áreas que tienen mayor relación contigo.
                     </p>
                 </div>
 
                 <div class="card">
+                    <div class="card-icon">◎</div>
+
                     <h3>Descubre tu perfil</h3>
+
                     <p>
-                        Al terminar las pruebas, podrás conocer las áreas
-                        vocacionales que tienen mayor relación con tus respuestas.
+                        Conoce las áreas vocacionales relacionadas con
+                        tus respuestas y preferencias.
                     </p>
                 </div>
 
                 <div class="card">
+                    <div class="card-icon">⌂</div>
+
                     <h3>Explora opciones</h3>
+
                     <p>
-                        Consulta carreras, instituciones, programas académicos
-                        y cursos relacionados con tus resultados.
+                        Consulta carreras, instituciones, programas
+                        académicos y cursos relacionados con tus resultados.
                     </p>
                 </div>
+
+                <div class="card">
+                    <div class="card-icon">★</div>
+
+                    <h3>Avanza y gana logros</h3>
+
+                    <p>
+                        Participa en una experiencia con puntos,
+                        progreso y reconocimientos por completar actividades.
+                    </p>
+                </div>
+
             </div>
         </section>
 
-        <section class="steps">
-            <h2>¿Cómo funciona?</h2>
+        <section class="steps-section">
+            <div class="section-heading">
+                <h2>¿Cómo funciona?</h2>
+
+                <p>
+                    Tu proceso de orientación se desarrolla en tres pasos sencillos.
+                </p>
+            </div>
 
             <div class="cards">
-                <div class="card">
-                    <div class="number">1</div>
+
+                <div class="card step-card">
+                    <div class="step-number">1</div>
+
                     <h3>Responde</h3>
+
                     <p>
                         Completa las preguntas de las pruebas vocacionales
-                        de manera sencilla e interactiva.
+                        de forma sencilla e interactiva.
                     </p>
                 </div>
 
-                <div class="card">
-                    <div class="number">2</div>
+                <div class="card step-card">
+                    <div class="step-number">2</div>
+
                     <h3>Descubre</h3>
+
                     <p>
-                        Revisa las áreas vocacionales que más se relacionan
+                        Revisa las áreas vocacionales que se relacionan
                         con tus intereses y respuestas.
                     </p>
                 </div>
 
-                <div class="card">
-                    <div class="number">3</div>
+                <div class="card step-card">
+                    <div class="step-number">3</div>
+
                     <h3>Explora</h3>
+
                     <p>
                         Conoce carreras, instituciones, programas y cursos
-                        que pueden servirte como guía para tu futuro.
+                        que pueden servirte como guía.
                     </p>
                 </div>
+
             </div>
         </section>
 
         <section>
-            <h2>¿Qué puedes lograr después de las pruebas?</h2>
+            <div class="result-box">
 
-            <div class="cards">
-                <div class="card">
-                    <h3>Identificar tus áreas de interés</h3>
+                <div class="result-text">
+                    <h2>¿Qué encontrarás después de las pruebas?</h2>
+
                     <p>
-                        Reconocer si tienes mayor afinidad con tecnología,
-                        salud, arte, administración, educación, ciencias
-                        sociales o ciencias.
+                        Al completar las pruebas, podrás conocer áreas
+                        vocacionales relacionadas con tus respuestas y
+                        explorar diferentes alternativas académicas.
                     </p>
                 </div>
 
-                <div class="card">
-                    <h3>Conocer posibles carreras</h3>
-                    <p>
-                        Obtener ideas de carreras relacionadas con las áreas
-                        que aparecen en tus resultados.
-                    </p>
+                <div class="result-list">
+                    <div class="result-item">Áreas vocacionales</div>
+                    <div class="result-item">Carreras</div>
+                    <div class="result-item">Instituciones</div>
+                    <div class="result-item">Cursos</div>
                 </div>
 
-                <div class="card">
-                    <h3>Explorar programas y cursos</h3>
-                    <p>
-                        Encontrar opciones universitarias, técnicas,
-                        tecnológicas y cursos de formación.
-                    </p>
-                </div>
-
-                <div class="card">
-                    <h3>Avanzar y ganar logros</h3>
-                    <p>
-                        Participar en una experiencia con puntos, progreso
-                        y reconocimientos por completar actividades.
-                    </p>
-                </div>
             </div>
         </section>
 
         <section>
-            <h2>Preguntas frecuentes</h2>
+            <div class="section-heading">
+                <h2>Preguntas frecuentes</h2>
 
-            <details>
-                <summary>¿Vocation Quest decide qué debo estudiar?</summary>
                 <p>
-                    No. La aplicación funciona como una herramienta de orientación.
-                    Sus resultados son una guía para ayudarte a explorar diferentes
-                    opciones, pero la decisión final es personal.
+                    Conoce algunas respuestas sobre el funcionamiento de la aplicación.
                 </p>
-            </details>
+            </div>
 
-            <details>
-                <summary>¿Tengo que responder una sola prueba?</summary>
-                <p>
-                    La aplicación puede contar con diferentes pruebas y niveles
-                    para conocer mejor tus intereses y preferencias.
-                </p>
-            </details>
+            <div class="faq">
 
-            <details>
-                <summary>¿Qué recibiré al terminar?</summary>
-                <p>
-                    Podrás consultar un resultado relacionado con tus áreas
-                    vocacionales y explorar carreras, instituciones, programas
-                    y cursos relacionados.
-                </p>
-            </details>
+                <details>
+                    <summary>¿Vocation Quest decide qué debo estudiar?</summary>
 
-            <details>
-                <summary>¿Necesito pagar para utilizar la aplicación?</summary>
-                <p>
-                    Vocation Quest está planteada como una alternativa gratuita
-                    de orientación vocacional.
-                </p>
-            </details>
+                    <p>
+                        No. La aplicación funciona como una herramienta de orientación.
+                        Sus resultados son una guía para explorar diferentes opciones,
+                        pero la decisión final es personal.
+                    </p>
+                </details>
+
+                <details>
+                    <summary>¿Tengo que responder una sola prueba?</summary>
+
+                    <p>
+                        La aplicación puede contar con diferentes pruebas y niveles
+                        para conocer mejor tus intereses y preferencias.
+                    </p>
+                </details>
+
+                <details>
+                    <summary>¿Qué recibiré al terminar?</summary>
+
+                    <p>
+                        Podrás consultar un resultado relacionado con tus áreas
+                        vocacionales y explorar carreras, instituciones, programas
+                        y cursos relacionados.
+                    </p>
+                </details>
+
+                <details>
+                    <summary>¿Necesito pagar para utilizar la aplicación?</summary>
+
+                    <p>
+                        Vocation Quest está planteada como una alternativa gratuita
+                        de orientación vocacional.
+                    </p>
+                </details>
+
+            </div>
+        </section>
+
+        <section class="final-section">
+            <h2>Empieza a explorar tu futuro</h2>
+
+            <p>
+                Regístrate en Vocation Quest y comienza a conocer tus intereses
+                para descubrir nuevas posibilidades académicas.
+            </p>
+
+            <a href="/registro" class="button primary-button">
+                Crear mi cuenta
+            </a>
         </section>
 
     </main>
 
     <footer>
-        <p>Vocation Quest - Explora tus intereses y construye tu futuro.</p>
+        <p>
+            Vocation Quest — Explora tus intereses y construye tu futuro.
+        </p>
     </footer>
 
 </body>

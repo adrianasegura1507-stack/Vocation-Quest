@@ -1,0 +1,90 @@
+{% extends "base_admin.html" %}
+
+{% block titulo %}Panel de administración{% endblock %}
+
+{% block contenido_admin %}
+
+    <section class="panel">
+        <h2>Hola, {{ admin.nombre }}</h2>
+        <p class="descripcion" style="margin-bottom:0;">
+            Este es el resumen de Vocation Quest. Desde aquí puedes
+            gestionar las cuentas de los estudiantes.
+        </p>
+    </section>
+
+    <section class="stats-admin">
+
+        <article class="stat-admin">
+            <span>Estudiantes registrados</span>
+            <strong>{{ total }}</strong>
+            <small>{{ activos }} activos · {{ desactivados }} desactivados</small>
+        </article>
+
+        <article class="stat-admin">
+            <span>Empezaron la prueba</span>
+            <strong>{{ empezaron }}</strong>
+            <small>Respondieron al menos un nivel</small>
+        </article>
+
+        <article class="stat-admin">
+            <span>Vieron su resultado</span>
+            <strong>{{ terminaron }}</strong>
+            <small>Completaron los 5 niveles</small>
+        </article>
+
+        <article class="stat-admin">
+            <span>Cuentas desactivadas</span>
+            <strong>{{ desactivados }}</strong>
+            <small>No pueden iniciar sesión</small>
+        </article>
+
+    </section>
+
+    <section class="panel">
+
+        <h2>Áreas principales de los estudiantes</h2>
+        <p class="descripcion">
+            Muestra cuál fue el área con más puntos para cada estudiante que
+            ya vio su resultado. Es una guía general: no reemplaza la
+            orientación de un psicorientador.
+        </p>
+
+        {% for area in areas %}
+            <div class="barra-area">
+                <div class="fila-barra">
+                    <strong>{{ area.nombre }}</strong>
+                    <span>{{ area.cantidad }} estudiante{{ '' if area.cantidad == 1 else 's' }} ({{ area.porcentaje }}%)</span>
+                </div>
+                <div class="riel">
+                    <div class="relleno" style="width: {{ area.porcentaje }}%;"></div>
+                </div>
+            </div>
+        {% else %}
+            <p class="vacio">
+                Todavía nadie ha terminado la prueba. Cuando alguien vea su
+                resultado, aparecerá aquí.
+            </p>
+        {% endfor %}
+
+    </section>
+
+    <section class="panel">
+
+        <h2>Gestión de estudiantes</h2>
+        <p class="descripcion">
+            Busca, crea, edita, activa, desactiva o elimina cuentas.
+        </p>
+
+        <div class="acciones">
+            <a href="{{ url_for('admin.lista_estudiantes') }}" class="boton boton-principal">
+                Ver estudiantes
+            </a>
+
+            <a href="{{ url_for('admin.nuevo_estudiante') }}" class="boton boton-suave">
+                + Crear estudiante
+            </a>
+        </div>
+
+    </section>
+
+{% endblock %}

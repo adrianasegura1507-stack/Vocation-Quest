@@ -1,0 +1,357 @@
+{% extends "base_cuenta.html" %}
+
+{% block ancho %}1100px{% endblock %}
+
+{# Menú de arriba del panel de administración #}
+{% block nav %}
+<nav class="nav-admin" aria-label="Menú de administración">
+    <a href="{{ url_for('admin.panel') }}"
+       class="{% if seccion == 'panel' %}activo{% endif %}">📊 Panel</a>
+
+    <a href="{{ url_for('admin.lista_estudiantes') }}"
+       class="{% if seccion == 'estudiantes' %}activo{% endif %}">🎓 Estudiantes</a>
+
+    <a href="{{ url_for('perfil.ver_perfil') }}">👤 Mi perfil</a>
+
+    <a href="{{ url_for('auth.logout') }}">Cerrar sesión</a>
+</nav>
+{% endblock %}
+
+{% block estilos %}
+<style>
+    /* ===== Menú ===== */
+
+    .nav-admin {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .nav-admin a {
+        color: white;
+        background: rgba(255, 255, 255, 0.14);
+        padding: 10px 14px;
+        border-radius: 11px;
+        font-size: 14px;
+        font-weight: bold;
+        transition: 0.2s ease;
+    }
+
+    .nav-admin a:hover {
+        background: rgba(255, 255, 255, 0.26);
+    }
+
+    .nav-admin a.activo {
+        background: var(--verde);
+        color: #21452d;
+    }
+
+    /* ===== Números del panel ===== */
+
+    .stats-admin {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 16px;
+    }
+
+    .stat-admin {
+        background: var(--blanco);
+        border: 1px solid var(--borde);
+        border-radius: 20px;
+        padding: 20px;
+        box-shadow: 0 6px 18px rgba(62, 39, 87, 0.05);
+    }
+
+    .stat-admin span {
+        display: block;
+        color: var(--texto-suave);
+        font-size: 13px;
+        margin-bottom: 8px;
+    }
+
+    .stat-admin strong {
+        color: var(--morado-principal);
+        font-size: 32px;
+    }
+
+    .stat-admin small {
+        display: block;
+        color: var(--texto-suave);
+        font-size: 12px;
+        margin-top: 6px;
+    }
+
+    /* ===== Barras de áreas ===== */
+
+    .barra-area {
+        margin-bottom: 14px;
+    }
+
+    .barra-area .fila-barra {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+        font-size: 14px;
+        margin-bottom: 6px;
+    }
+
+    .barra-area .fila-barra strong {
+        color: var(--morado-principal);
+    }
+
+    .barra-area .riel {
+        height: 10px;
+        background: var(--morado-claro);
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    .barra-area .relleno {
+        height: 100%;
+        background: var(--verde);
+        border-radius: 8px;
+    }
+
+    /* ===== Búsqueda y encabezado de la lista ===== */
+
+    .encabezado-lista {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 14px;
+        flex-wrap: wrap;
+        margin-bottom: 18px;
+    }
+
+    .busqueda {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        flex: 1;
+        min-width: 240px;
+    }
+
+    .busqueda input {
+        flex: 1;
+        min-width: 180px;
+        padding: 12px 14px;
+        border: 2px solid var(--borde);
+        border-radius: 12px;
+        font-size: 15px;
+        font-family: inherit;
+        background: #fcfbfe;
+    }
+
+    .busqueda input:focus {
+        outline: none;
+        border-color: var(--morado-principal);
+        background: white;
+    }
+
+    /* ===== Tabla ===== */
+
+    .tabla-wrap {
+        overflow-x: auto;
+    }
+
+    table.tabla {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14px;
+    }
+
+    table.tabla th {
+        text-align: left;
+        color: var(--texto-suave);
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        padding: 10px 12px;
+        border-bottom: 2px solid var(--borde);
+    }
+
+    table.tabla td {
+        padding: 13px 12px;
+        border-bottom: 1px solid var(--borde);
+        vertical-align: middle;
+    }
+
+    .celda-nombre strong {
+        display: block;
+        color: var(--morado-principal);
+    }
+
+    .celda-nombre small {
+        color: var(--texto-suave);
+        word-break: break-all;
+    }
+
+    .insignia {
+        display: inline-block;
+        padding: 5px 10px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: bold;
+        white-space: nowrap;
+    }
+
+    .insignia.activa {
+        background: #e8f8ed;
+        color: var(--verde-oscuro);
+    }
+
+    .insignia.inactiva {
+        background: #f1eef6;
+        color: var(--texto-suave);
+    }
+
+    .insignia.fin {
+        background: #e8f8ed;
+        color: var(--verde-oscuro);
+    }
+
+    .insignia.medio {
+        background: var(--morado-claro);
+        color: var(--morado-principal);
+    }
+
+    .acciones-celda {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    .acciones-celda form {
+        display: inline;
+    }
+
+    .boton-chico {
+        padding: 8px 12px;
+        font-size: 13px;
+        border-radius: 10px;
+    }
+
+    .vacio {
+        text-align: center;
+        color: var(--texto-suave);
+        padding: 30px 10px;
+        font-size: 14px;
+    }
+
+    /* ===== Paginación ===== */
+
+    .paginacion {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-top: 18px;
+        color: var(--texto-suave);
+        font-size: 13px;
+    }
+
+    .paginacion .botones {
+        display: flex;
+        gap: 8px;
+    }
+
+    /* ===== Formularios del panel ===== */
+
+    .formulario-estrecho {
+        max-width: 640px;
+    }
+
+    .campo-ayuda {
+        color: var(--texto-suave);
+        font-size: 12px;
+        margin-top: 5px;
+        display: block;
+    }
+
+    /* ===== Pantallas pequeñas ===== */
+
+    @media (max-width: 900px) {
+        .stats-admin {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @media (max-width: 760px) {
+
+        /* Cada fila de la tabla se vuelve una tarjeta */
+
+        table.tabla thead {
+            display: none;
+        }
+
+        table.tabla,
+        table.tabla tbody,
+        table.tabla tr,
+        table.tabla td {
+            display: block;
+            width: 100%;
+        }
+
+        table.tabla tr {
+            border: 1px solid var(--borde);
+            border-radius: 16px;
+            margin-bottom: 12px;
+            padding: 10px 14px;
+            background: #fcfbfe;
+        }
+
+        table.tabla td {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            padding: 7px 0;
+            border: none;
+        }
+
+        table.tabla td::before {
+            content: attr(data-label);
+            font-weight: bold;
+            color: var(--morado-principal);
+            font-size: 12px;
+            flex-shrink: 0;
+        }
+
+        table.tabla td.celda-nombre {
+            display: block;
+        }
+
+        table.tabla td.celda-nombre::before {
+            display: none;
+        }
+
+        table.tabla td.acciones-celda {
+            justify-content: flex-start;
+        }
+
+        table.tabla td.acciones-celda::before {
+            display: none;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .stats-admin {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block contenido %}
+
+    <!-- Avisos de "se guardó", "se eliminó", etc. -->
+    {% with mensajes = get_flashed_messages(with_categories=true) %}
+        {% for categoria, mensaje in mensajes %}
+            <div class="aviso {{ categoria }}" role="status">{{ mensaje }}</div>
+        {% endfor %}
+    {% endwith %}
+
+    {% block contenido_admin %}{% endblock %}
+
+{% endblock %}

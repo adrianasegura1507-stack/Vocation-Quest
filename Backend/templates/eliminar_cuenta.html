@@ -1,0 +1,56 @@
+{% extends "base_cuenta.html" %}
+
+{% block titulo %}Eliminar cuenta{% endblock %}
+
+{% block contenido %}
+
+    <section class="panel">
+
+        <h2>¿Seguro que quieres eliminar tu cuenta?</h2>
+
+        <p class="descripcion">
+            Hola, {{ usuario.nombre }}. Esta acción no se puede deshacer.
+        </p>
+
+        <div class="aviso error">
+            Se borrarán para siempre tu cuenta, tu progreso en los niveles,
+            tus respuestas, tus resultados y tus logros. Si quieres volver a
+            usar Vocation Quest, tendrás que crear una cuenta nueva y empezar
+            desde el nivel 1.
+        </div>
+
+        {% if error %}
+            <div class="aviso error" role="alert">{{ error }}</div>
+        {% endif %}
+
+        <form action="{{ url_for('perfil.eliminar_cuenta') }}" method="POST" novalidate>
+
+            <div class="campo">
+                <label for="contrasena">
+                    Para confirmar, escribe tu contraseña
+                </label>
+                <input
+                    type="password"
+                    id="contrasena"
+                    name="contrasena"
+                    autocomplete="current-password"
+                >
+            </div>
+
+            <div class="acciones">
+
+                <button type="submit" class="boton boton-peligro">
+                    Sí, eliminar mi cuenta
+                </button>
+
+                <a href="{{ url_for('perfil.ver_perfil') }}" class="boton boton-suave">
+                    No, volver a mi perfil
+                </a>
+
+            </div>
+
+        </form>
+
+    </section>
+
+{% endblock %}

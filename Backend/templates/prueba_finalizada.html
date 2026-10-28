@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Nivel completado | Vocation Quest</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+    <main class="prueba-page">
+
+        <header class="logo">
+            <span class="logo-icon">✦</span>
+            <span>Vocation Quest</span>
+        </header>
+
+        <section class="prueba-container">
+
+            <div class="pregunta-card">
+
+                {% if es_ultimo %}
+
+                    <h1>🏆 ¡Completaste todas las pruebas!</h1>
+
+                    <p>
+                        Terminaste el Nivel {{ prueba.numero_nivel }} -
+                        {{ prueba.nombre }}, el último con preguntas.
+                    </p>
+
+                    <p>
+                        Ya puedes descubrir qué áreas se parecen más a ti.
+                    </p>
+
+                    <div class="botones-prueba">
+
+                        <a href="{{ url_for('inicio_estudiante') }}"
+                           class="btn-anterior">
+                            🗺️ Volver a los niveles
+                        </a>
+
+                        <a href="{{ url_for('pruebas.ver_resultados') }}"
+                           class="btn-siguiente">
+                            Ver mis resultados →
+                        </a>
+
+                    </div>
+
+                {% else %}
+
+                    <h1>🎉 ¡Nivel completado!</h1>
+
+                    <p>
+                        Has terminado el
+                        Nivel {{ prueba.numero_nivel }} -
+                        {{ prueba.nombre }}.
+                    </p>
+
+                    <p>
+                        ¡Excelente trabajo! Tu progreso
+                        ha quedado guardado.
+                    </p>
+
+                    <div class="botones-prueba">
+
+                        <a href="{{ url_for('inicio_estudiante') }}"
+                           class="btn-anterior">
+                            🗺️ Volver a los niveles
+                        </a>
+
+                        {% if siguiente_prueba %}
+
+                            <a href="{{ url_for(
+                                'pruebas.inicio_prueba',
+                                id_prueba=siguiente_prueba.id_prueba
+                            ) }}"
+                               class="btn-siguiente">
+                                🚀 Siguiente nivel →
+                            </a>
+
+                        {% endif %}
+
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+        </section>
+
+    </main>
+
+</body>
+</html>

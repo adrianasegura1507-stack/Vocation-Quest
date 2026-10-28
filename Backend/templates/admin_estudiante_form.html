@@ -1,0 +1,93 @@
+{% extends "base_admin.html" %}
+
+{% block titulo %}{% if modo == 'crear' %}Crear estudiante{% else %}Editar estudiante{% endif %}{% endblock %}
+
+{% block contenido_admin %}
+
+    <section class="panel formulario-estrecho">
+
+        <h2>{% if modo == 'crear' %}Crear estudiante{% else %}Editar estudiante{% endif %}</h2>
+
+        <p class="descripcion">
+            {% if modo == 'crear' %}
+                Crea una cuenta de estudiante. Entrégale la contraseña para
+                que pueda iniciar sesión (después puede cambiarla en su perfil).
+            {% else %}
+                Cambia los datos de {{ estudiante.nombre }}. Si dejas la
+                contraseña vacía, se queda la que ya tiene.
+            {% endif %}
+        </p>
+
+        {% if error %}
+            <div class="aviso error" role="alert">{{ error }}</div>
+        {% endif %}
+
+        <form method="POST" novalidate>
+
+            <div class="campo">
+                <label for="nombre">Nombre</label>
+                <input
+                    type="text"
+                    id="nombre"
+                    name="nombre"
+                    maxlength="100"
+                    value="{{ datos.get('nombre', '') }}"
+                >
+            </div>
+
+            <div class="campo">
+                <label for="correo">Correo electrónico</label>
+                <input
+                    type="email"
+                    id="correo"
+                    name="correo"
+                    maxlength="150"
+                    value="{{ datos.get('correo', '') }}"
+                >
+            </div>
+
+            <div class="campo">
+                <label for="contrasena">
+                    {% if modo == 'crear' %}Contraseña{% else %}Contraseña nueva (opcional){% endif %}
+                </label>
+                <input
+                    type="password"
+                    id="contrasena"
+                    name="contrasena"
+                    autocomplete="new-password"
+                >
+                <span class="campo-ayuda">Mínimo 8 caracteres.</span>
+            </div>
+
+            <div class="campo">
+                <label for="fecha_nacimiento">Fecha de nacimiento</label>
+                <input
+                    type="date"
+                    id="fecha_nacimiento"
+                    name="fecha_nacimiento"
+                    min="{{ fecha_min }}"
+                    max="{{ fecha_max }}"
+                    value="{{ datos.get('fecha_nacimiento', '') }}"
+                >
+                <span class="campo-ayuda">
+                    La edad debe estar entre {{ edad_minima }} y {{ edad_maxima }} años.
+                </span>
+            </div>
+
+            <div class="acciones">
+
+                <button type="submit" class="boton boton-principal">
+                    {% if modo == 'crear' %}Crear cuenta{% else %}Guardar cambios{% endif %}
+                </button>
+
+                <a href="{{ url_for('admin.lista_estudiantes') }}" class="boton boton-suave">
+                    Cancelar
+                </a>
+
+            </div>
+
+        </form>
+
+    </section>
+
+{% endblock %}

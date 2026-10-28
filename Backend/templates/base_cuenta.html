@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{% block titulo %}Mi cuenta{% endblock %} | Vocation Quest</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --morado-principal: #542b82;
+            --morado-oscuro: #392052;
+            --morado-claro: #eee5f8;
+            --verde: #8ed6a5;
+            --verde-oscuro: #477c59;
+            --fondo: #f7f8fc;
+            --texto: #29213d;
+            --texto-suave: #77718a;
+            --blanco: #ffffff;
+            --borde: #e9e5f1;
+            --rojo: #b3261e;
+            --rojo-claro: #fdecec;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: var(--fondo);
+            color: var(--texto);
+            min-height: 100vh;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        :focus-visible {
+            outline: 3px solid var(--verde-oscuro);
+            outline-offset: 3px;
+        }
+
+        /* =========================
+           BARRA SUPERIOR
+        ========================= */
+
+        header {
+            background: linear-gradient(135deg, var(--morado-principal), #7544a8);
+            color: white;
+            padding: 18px 6%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            width: 44px;
+            height: 44px;
+            background: var(--verde);
+            color: var(--morado-oscuro);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            box-shadow: 0 5px 12px rgba(0, 0, 0, 0.12);
+        }
+
+        .logo-text h1 {
+            font-size: 24px;
+            margin-bottom: 3px;
+        }
+
+        .logo-text span {
+            font-size: 12px;
+            color: #eee4fa;
+        }
+
+        .volver {
+            background: var(--verde);
+            color: #21452d;
+            padding: 11px 16px;
+            border-radius: 11px;
+            font-weight: bold;
+            font-size: 14px;
+            transition: 0.2s ease;
+        }
+
+        .volver:hover {
+            background: #b0e7bf;
+            transform: translateY(-2px);
+        }
+
+        /* =========================
+           CONTENIDO
+        ========================= */
+
+        .contenedor {
+            width: 90%;
+            max-width: {% block ancho %}760px{% endblock %};
+            margin: 30px auto 50px;
+            display: flex;
+            flex-direction: column;
+            gap: 22px;
+        }
+
+        .panel {
+            background: var(--blanco);
+            border: 1px solid var(--borde);
+            border-radius: 23px;
+            padding: 26px;
+            box-shadow: 0 8px 25px rgba(62, 39, 87, 0.05);
+        }
+
+        .panel h2 {
+            color: var(--morado-principal);
+            font-size: 21px;
+            margin-bottom: 6px;
+        }
+
+        .panel .descripcion {
+            color: var(--texto-suave);
+            font-size: 14px;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+
+        /* =========================
+           AVISOS
+        ========================= */
+
+        .aviso {
+            border-radius: 12px;
+            padding: 12px 16px;
+            font-size: 14px;
+            line-height: 1.4;
+            margin-bottom: 16px;
+        }
+
+        .aviso.error {
+            background: var(--rojo-claro);
+            color: #9b1c1c;
+            border: 1px solid #f5b5b5;
+        }
+
+        .aviso.exito {
+            background: #e8f8ed;
+            color: #2f6b46;
+            border: 1px solid #bfe3cb;
+        }
+
+        .aviso.info {
+            background: #fff8df;
+            color: #78601d;
+            border: 1px solid #f4e4a9;
+        }
+
+        /* =========================
+           FORMULARIOS Y BOTONES
+        ========================= */
+
+        .campo {
+            margin-bottom: 16px;
+        }
+
+        .campo label {
+            display: block;
+            font-size: 13px;
+            font-weight: bold;
+            color: var(--morado-principal);
+            margin-bottom: 6px;
+        }
+
+        .campo input {
+            width: 100%;
+            padding: 12px 14px;
+            border: 2px solid var(--borde);
+            border-radius: 12px;
+            font-size: 15px;
+            font-family: inherit;
+            color: var(--texto);
+            background: #fcfbfe;
+        }
+
+        .campo input:focus {
+            outline: none;
+            border-color: var(--morado-principal);
+            background: white;
+        }
+
+        .campo small {
+            display: block;
+            color: var(--texto-suave);
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        .boton {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: bold;
+            font-family: inherit;
+            cursor: pointer;
+            transition: 0.2s ease;
+        }
+
+        .boton:hover {
+            transform: translateY(-2px);
+        }
+
+        .boton-principal {
+            background: var(--morado-principal);
+            color: white;
+        }
+
+        .boton-principal:hover {
+            background: var(--morado-oscuro);
+        }
+
+        .boton-suave {
+            background: var(--morado-claro);
+            color: var(--morado-principal);
+        }
+
+        .boton-peligro {
+            background: var(--rojo);
+            color: white;
+        }
+
+        .boton-peligro:hover {
+            background: #8c1d18;
+        }
+
+        .boton-borde-peligro {
+            background: white;
+            color: var(--rojo);
+            border: 2px solid #f0b9b6;
+        }
+
+        .acciones {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 6px;
+        }
+
+        @media (max-width: 600px) {
+            .logo-text h1 {
+                font-size: 20px;
+            }
+
+            .panel {
+                padding: 20px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                transition: none !important;
+            }
+        }
+    </style>
+
+    {% block estilos %}{% endblock %}
+</head>
+
+<body>
+
+    <header>
+        <div class="logo">
+            <div class="logo-icon">🐾</div>
+
+            <div class="logo-text">
+                <h1>Vocation Quest</h1>
+                <span>Tu aventura vocacional</span>
+            </div>
+        </div>
+
+        {% block nav %}
+        <a href="{{ volver_url }}" class="volver">← {{ volver_texto }}</a>
+        {% endblock %}
+    </header>
+
+    <main class="contenedor">
+        {% block contenido %}{% endblock %}
+    </main>
+
+</body>
+</html>
