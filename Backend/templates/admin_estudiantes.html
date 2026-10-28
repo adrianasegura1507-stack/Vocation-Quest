@@ -1,0 +1,143 @@
+{% extends "base_admin.html" %}
+
+{% block titulo %}Estudiantes{% endblock %}
+
+{% block contenido_admin %}
+
+    <section class="panel">
+
+        <div class="encabezado-lista">
+
+            <div>
+                <h2>Estudiantes</h2>
+                <p class="descripcion" style="margin-bottom:0;">
+                    {{ total }} estudiante{{ '' if total == 1 else 's' }}
+                    {% if busqueda %}encontrado{{ '' if total == 1 else 's' }}{% else %}registrado{{ '' if total == 1 else 's' }}{% endif %}
+                </p>
+            </div>
+
+            <a href="{{ url_for('admin.nuevo_estudiante') }}" class="boton boton-principal">
+                + Crear estudiante
+            </a>
+
+        </div>
+
+        <form method="GET" action="{{ url_for('admin.lista_estudiantes') }}" class="busqueda" style="margin-bottom:18px;">
+
+            <input
+                type="text"
+                name="q"
+                placeholder="Buscar por nombre o correo"
+                value="{{ busqueda }}"
+                aria-label="Buscar estudiantes"
+            >
+
+            <button type="submit" class="boton boton-suave">Buscar</button>
+
+            {% if busqueda %}
+                <a href="{{ url_for('admin.lista_estudiantes') }}" class="boton boton-suave">Limpiar</a>
+            {% endif %}
+
+        </form>
+
+        <div class="tabla-wrap">
+
+            <table class="tabla">
+
+                <thead>
+                    <tr>
+                        <th>Estudiante</th>
+                        <th>Edad</th>
+                        <th>Progreso</th>
+                        <th>Cuenta</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for est in estudiantes %}
+                    <tr>
+
+                        <td class="celda-nombre">
+                            <strong>{{ est.nombre }}</strong>
+                            <small>{{ est.correo }}</small>
+                        </td>
+
+                        <td data-label="Edad">
+                            {% if est.edad %}{{ est.edad }} años{% else %}—{% endif %}
+                        </td>
+
+                        <td data-label="Progreso">
+                            <span class="insignia {{ est.progreso_clase }}">{{ est.progreso }}</span>
+                        </td>
+
+                        <td data-label="Cuenta">
+                            {% if est.activo %}
+                                <span class="insignia activa">Activa</span>
+                            {% else %}
+                                <span class="insignia inactiva">Desactivada</span>
+                            {% endif %}
+                        </td>
+
+                        <td class="acciones-celda">
+
+                            <a href="{{ url_for('admin.editar_estudiante', id_usuario=est.id_usuario) }}"
+                               class="boton boton-suave boton-chico">Editar</a>
+
+                            <form action="{{ url_for('admin.cambiar_estado', id_usuario=est.id_usuario) }}" method="POST">
+                                <input type="hidden" name="volver" value="{{ volver }}">
+                                <button type="submit" class="boton boton-suave boton-chico">
+                                    {% if est.activo %}Desactivar{% else %}Activar{% endif %}
+                                </button>
+                            </form>
+
+                            <a href="{{ url_for('admin.eliminar_estudiante', id_usuario=est.id_usuario) }}"
+                               class="boton boton-borde-peligro boton-chico">Eliminar</a>
+
+                        </td>
+
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="5" class="vacio">
+                            {% if busqueda %}
+                                No encontramos estudiantes con «{{ busqueda }}».
+                            {% else %}
+                                Todavía no hay estudiantes registrados.
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        {% if total_paginas > 1 %}
+        <div class="paginacion">
+
+            <span>Página {{ pagina }} de {{ total_paginas }}</span>
+
+            <div class="botones">
+
+                {% if pagina > 1 %}
+                    <a href="{{ url_for('admin.lista_estudiantes', q=busqueda, pagina=pagina - 1) }}"
+                       class="boton boton-suave boton-chico">← Anterior</a>
+                {% endif %}
+
+                {% if pagina < total_paginas %}
+                    <a href="{{ url_for('admin.lista_estudiantes', q=busqueda, pagina=pagina + 1) }}"
+                       class="boton boton-suave boton-chico">Siguiente →</a>
+                {% endif %}
+
+            </div>
+
+        </div>
+        {% endif %}
+
+    </section>
+
+{% endblock %}
