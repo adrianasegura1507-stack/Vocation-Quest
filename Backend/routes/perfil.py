@@ -71,6 +71,9 @@ def datos_de_enlace_volver(usuario):
     if usuario["rol"] == "estudiante":
         return url_for("inicio_estudiante"), "Volver a mi aventura"
 
+    if usuario["rol"] == "administrador":
+        return url_for("admin.panel"), "Volver al panel"
+
     return url_for("inicio"), "Volver al inicio"
 
 

@@ -129,17 +129,37 @@
                     </div>
                 </form>
 
-                <!-- Salir de la prueba -->
+                <!-- Salir de la prueba (la confirmación se abre al pulsar, sin JavaScript) -->
                 <div class="salir-prueba">
-                    <a
-                        href="{{ url_for(
-                            'pruebas.salir_prueba',
-                            id_prueba=prueba.id_prueba
-                        ) }}"
-                        onclick="return confirm('¿Seguro que quieres salir? Tu progreso quedará guardado.')"
-                    >
-                        🚪 Salir de la prueba
-                    </a>
+                    <details>
+
+                        <summary style="cursor:pointer; list-style:none;">
+                            🚪 Salir de la prueba
+                        </summary>
+
+                        <div style="margin-top:12px; background:#f6f1fc; border:1px solid #e2ddec; border-radius:14px; padding:14px 16px;">
+
+                            <p style="margin-bottom:12px; line-height:1.4;">
+                                ¿Seguro que quieres salir? Tu progreso quedará guardado.
+                            </p>
+
+                            <a
+                                href="{{ url_for('pruebas.salir_prueba', id_prueba=prueba.id_prueba) }}"
+                                style="display:inline-block; background:#542b82; color:white; padding:9px 16px; border-radius:10px; font-weight:bold; font-size:14px; text-decoration:none; margin-right:8px;"
+                            >
+                                Sí, salir
+                            </a>
+
+                            <a
+                                href="{{ url_for('pruebas.realizar_prueba', id_prueba=prueba.id_prueba, pregunta=numero) }}"
+                                style="display:inline-block; background:#d9f3c8; color:#21452d; padding:9px 16px; border-radius:10px; font-weight:bold; font-size:14px; text-decoration:none;"
+                            >
+                                No, seguir
+                            </a>
+
+                        </div>
+
+                    </details>
                 </div>
 
             </div>

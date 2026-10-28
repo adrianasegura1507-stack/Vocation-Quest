@@ -1,7 +1,10 @@
 import re
 from datetime import date, datetime, timedelta
 
-from flask import Blueprint, render_template, request, redirect, url_for, session
+from flask import (
+    Blueprint, render_template, request, redirect,
+    url_for, session, flash
+)
 from werkzeug.security import generate_password_hash, check_password_hash
 from database import obtener_conexion
 
@@ -287,7 +290,7 @@ def login():
         try:
 
             sql = """
-                SELECT id_usuario, nombre, correo, contrasena, rol
+                SELECT id_usuario, nombre, correo, contrasena, rol, estado
                 FROM usuarios
                 WHERE correo = %s
             """
@@ -307,11 +310,22 @@ def login():
                     correo
                 )
 
+            # La contraseña es correcta, pero la cuenta fue desactivada
+            if not usuario["estado"]:
+                return mostrar_login(
+                    "Tu cuenta está desactivada. "
+                    "Habla con tu orientador o con un administrador.",
+                    correo
+                )
+
             session["id_usuario"] = usuario["id_usuario"]
             session["nombre"] = usuario["nombre"]
             session["rol"] = usuario["rol"]
 
-            # Enviar al estudiante a su página personal
+            # Cada rol va a su página
+            if usuario["rol"] == "administrador":
+                return redirect(url_for("admin.panel"))
+
             return redirect(url_for("inicio_estudiante"))
 
         except Exception as error:
@@ -336,3 +350,53 @@ def logout():
     """
     session.clear()
     return redirect(url_for("inicio"))
+
+
+# =========================================
+# REVISAR QUE LA CUENTA SIGA ACTIVA
+# =========================================
+
+@auth.before_app_request
+def revisar_cuenta_activa():
+    """
+    Antes de mostrar cualquier página, revisa que la cuenta de quien
+    tiene la sesión iniciada siga existiendo y esté activa. Si un
+    administrador la desactivó o la eliminó, se cierra la sesión.
+    """
+    if request.endpoint in (None, "static"):
+        return None
+
+    id_usuario = session.get("id_usuario")
+
+    if id_usuario is None:
+        return None
+
+    conexion = obtener_conexion()
+    cursor = conexion.cursor(dictionary=True)
+
+    try:
+        cursor.execute(
+            "SELECT estado FROM usuarios WHERE id_usuario = %s",
+            (id_usuario,)
+        )
+
+        fila = cursor.fetchone()
+
+    finally:
+        cursor.close()
+        conexion.close()
+
+    if fila is None:
+        session.clear()
+        return redirect(url_for("auth.login"))
+
+    if not fila["estado"]:
+        session.clear()
+        flash(
+            "Tu cuenta está desactivada. "
+            "Habla con tu orientador o con un administrador.",
+            "error"
+        )
+        return redirect(url_for("auth.login"))
+
+    return None

@@ -109,7 +109,7 @@
 
         .contenedor {
             width: 90%;
-            max-width: 760px;
+            max-width: {% block ancho %}760px{% endblock %};
             margin: 30px auto 50px;
             display: flex;
             flex-direction: column;
@@ -294,7 +294,9 @@
             </div>
         </div>
 
+        {% block nav %}
         <a href="{{ volver_url }}" class="volver">← {{ volver_texto }}</a>
+        {% endblock %}
     </header>
 
     <main class="contenedor">

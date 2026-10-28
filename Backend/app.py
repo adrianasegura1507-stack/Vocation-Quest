@@ -2,6 +2,7 @@ from flask import Flask, render_template, session, redirect, url_for
 from routes.auth import auth
 from routes.pruebas import pruebas, NIVELES_PRUEBA
 from routes.perfil import perfil
+from routes.admin import admin
 from database import obtener_conexion
 
 app = Flask(__name__)
@@ -11,6 +12,7 @@ app.secret_key = "vocation_quest_clave_secreta"
 app.register_blueprint(auth)
 app.register_blueprint(pruebas)
 app.register_blueprint(perfil)
+app.register_blueprint(admin)
 
 # =========================================
 # ICONOS DE LOS LOGROS
