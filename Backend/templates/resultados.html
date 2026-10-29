@@ -8,6 +8,105 @@
 
     <link rel="stylesheet"
           href="{{ url_for('static', filename='css/style.css') }}">
+
+    <style>
+        /* Carreras y programas recomendados */
+        .ruta-intro {
+            color: #77718a;
+            margin-bottom: 18px;
+        }
+
+        .ruta-area {
+            margin-top: 26px;
+        }
+
+        .ruta-area h3 {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            color: #542b82;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #eee5f8;
+        }
+
+        .ruta-area h3 span {
+            color: #77718a;
+            font-size: 0.9rem;
+        }
+
+        .ruta-carrera {
+            margin-top: 16px;
+            padding: 16px;
+            background: #f7f8fc;
+            border: 1px solid #eee5f8;
+            border-radius: 14px;
+        }
+
+        .ruta-carrera h4 {
+            color: #29213d;
+            margin-bottom: 6px;
+        }
+
+        .ruta-carrera p {
+            color: #29213d;
+            margin-bottom: 6px;
+        }
+
+        .ruta-programas {
+            list-style: none;
+            margin: 12px 0 0;
+            padding: 0;
+        }
+
+        .ruta-programas li {
+            padding: 10px 0;
+            border-top: 1px solid #eee5f8;
+            color: #29213d;
+        }
+
+        .ruta-tipo {
+            display: inline-block;
+            margin-right: 6px;
+            padding: 2px 10px;
+            background: #eee5f8;
+            color: #542b82;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .ruta-programas small {
+            color: #77718a;
+        }
+
+        .ruta-programas a {
+            margin-left: 8px;
+            color: #542b82;
+            font-weight: bold;
+        }
+
+        .ruta-vacio {
+            color: #77718a;
+            font-style: italic;
+        }
+
+        /* Pie de página con los créditos del equipo */
+        .pie-creditos {
+            max-width: 760px;
+            margin: 32px auto 24px;
+            padding: 20px 16px 0;
+            border-top: 1px solid #eee5f8;
+            text-align: center;
+            color: #77718a;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        .pie-creditos strong {
+            color: #542b82;
+        }
+    </style>
 </head>
 
 <body>
@@ -49,6 +148,120 @@
                     {% endif %}
 
                 </div>
+
+                <!-- Carreras y dónde estudiarlas -->
+
+                {% if recomendaciones %}
+
+                    <div class="pregunta-card">
+
+                        <h2>Carreras y dónde estudiarlas</h2>
+
+                        <p class="ruta-intro">
+                            Estas son algunas opciones relacionadas con tus
+                            3 áreas con más afinidad. Es una guía inicial,
+                            no una lista completa.
+                        </p>
+
+                        {% for rec in recomendaciones %}
+
+                            <div class="ruta-area">
+
+                                <h3>
+                                    {{ rec.area.posicion }}. {{ rec.area.nombre }}
+                                    <span>{{ rec.area.porcentaje }}%</span>
+                                </h3>
+
+                                {% if rec.carreras %}
+
+                                    {% for carrera in rec.carreras %}
+
+                                        <div class="ruta-carrera">
+
+                                            <h4>{{ carrera.nombre }}</h4>
+
+                                            {% if carrera.descripcion %}
+                                                <p>{{ carrera.descripcion }}</p>
+                                            {% endif %}
+
+                                            {% if carrera.campo_laboral %}
+                                                <p>
+                                                    <strong>Dónde podrías trabajar:</strong>
+                                                    {{ carrera.campo_laboral }}
+                                                </p>
+                                            {% endif %}
+
+                                            {% if carrera.programas %}
+
+                                                <ul class="ruta-programas">
+
+                                                    {% for programa in carrera.programas %}
+
+                                                        <li>
+                                                            <span class="ruta-tipo">{{ programa.tipo_texto }}</span>
+                                                            <strong>{{ programa.nombre }}</strong>
+                                                            · {{ programa.institucion }}
+
+                                                            {% if programa.descripcion %}
+                                                                <br>
+                                                                <small>{{ programa.descripcion }}</small>
+                                                            {% endif %}
+
+                                                            <br>
+                                                            <small>
+                                                                Duración:
+                                                                {{ programa.duracion or "consúltala en el sitio oficial" }}
+                                                            </small>
+
+                                                            {% set enlace = programa.enlace_programa or programa.enlace_institucion %}
+
+                                                            {% if enlace %}
+                                                                <a href="{{ enlace }}"
+                                                                   target="_blank"
+                                                                   rel="noopener noreferrer">
+                                                                    Ver sitio oficial
+                                                                </a>
+                                                            {% endif %}
+                                                        </li>
+
+                                                    {% endfor %}
+
+                                                </ul>
+
+                                            {% else %}
+
+                                                <p class="ruta-vacio">
+                                                    Aún no tenemos programas cargados para esta carrera.
+                                                </p>
+
+                                            {% endif %}
+
+                                        </div>
+
+                                    {% endfor %}
+
+                                {% else %}
+
+                                    <p class="ruta-vacio">
+                                        Todavía no tenemos carreras cargadas para esta área.
+                                    </p>
+
+                                {% endif %}
+
+                            </div>
+
+                        {% endfor %}
+
+                        <div class="resultado-aviso">
+                            <strong>🔎 Comprueba la información</strong>
+                            Los programas, requisitos y fechas cambian. Antes
+                            de decidir, confirma todo en el sitio oficial de
+                            cada institución.
+                        </div>
+
+                    </div>
+
+                {% endif %}
 
                 <!-- Todas las áreas -->
 
@@ -132,6 +345,16 @@
         </section>
 
     </main>
+
+    <footer class="pie-creditos">
+        <p><strong>Vocation Quest</strong> · Proyecto académico</p>
+        <p>
+            Adriana Segura Ceballos ·
+            Maylle Andrea Quesada Enciso ·
+            Karol Juliana Varajas Castro
+        </p>
+        <p>Técnicos en Programación de Software · SENA</p>
+    </footer>
 
 </body>
 </html>
