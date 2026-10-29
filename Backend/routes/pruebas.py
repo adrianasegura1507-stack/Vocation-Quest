@@ -6,7 +6,13 @@ pruebas = Blueprint("pruebas", __name__)
 # Cantidad de niveles que tienen preguntas.
 # El nivel 5 ya no es una prueba: es la página de resultados.
 NIVELES_PRUEBA = 4
-
+# Cómo se escribe el tipo de programa en la página de resultados
+ETIQUETAS_TIPO = {
+    "universitario": "Universitario",
+    "tecnologico": "Tecnólogo",
+    "tecnico": "Técnico",
+    "curso": "Curso"
+}
 
 # =========================================
 # BUSCAR ESTUDIANTE
@@ -983,12 +989,74 @@ def ver_resultados():
 
                 conexion.commit()
 
+                # =========================================
+        # CARRERAS Y PROGRAMAS DE LAS 3 ÁREAS PRINCIPALES
+        # =========================================
+
+        recomendaciones = []
+
+        if principal:
+
+            for area in areas[:3]:
+
+                cursor.execute(
+                    """
+                    SELECT c.id_carrera, c.nombre, c.descripcion,
+                           c.campo_laboral
+                    FROM carreras c
+                    INNER JOIN carrera_area ca
+                        ON ca.id_carrera = c.id_carrera
+                    WHERE ca.id_area = %s
+                    AND c.estado = 1
+                    ORDER BY c.nombre
+                    """,
+                    (area["id_area"],)
+                )
+
+                carreras = cursor.fetchall()
+
+                for carrera in carreras:
+
+                    cursor.execute(
+                        """
+                        SELECT p.nombre, p.tipo, p.descripcion, p.duracion,
+                               p.sitio_web AS enlace_programa,
+                               i.nombre AS institucion,
+                               i.sitio_web AS enlace_institucion
+                        FROM programas p
+                        INNER JOIN programa_carrera pc
+                            ON pc.id_programa = p.id_programa
+                        INNER JOIN instituciones i
+                            ON i.id_institucion = p.id_institucion
+                        WHERE pc.id_carrera = %s
+                        AND p.estado = 1
+                        AND i.estado = 1
+                        ORDER BY i.nombre, p.nombre
+                        """,
+                        (carrera["id_carrera"],)
+                    )
+
+                    programas = cursor.fetchall()
+
+                    for programa in programas:
+                        programa["tipo_texto"] = ETIQUETAS_TIPO.get(
+                            programa["tipo"], programa["tipo"]
+                        )
+
+                    carrera["programas"] = programas
+
+                recomendaciones.append({
+                    "area": area,
+                    "carreras": carreras
+                })
+
         return render_template(
             "resultados.html",
             areas=areas,
             principal=principal,
             empatadas=empatadas,
-            total_puntos=total_puntos
+            total_puntos=total_puntos,
+            recomendaciones=recomendaciones
         )
 
     finally:
