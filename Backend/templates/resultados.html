@@ -8,6 +8,24 @@
 
     <link rel="stylesheet"
           href="{{ url_for('static', filename='css/style.css') }}">
+
+    <style>
+        /* Pie de página con los créditos del equipo */
+        .pie-creditos {
+            max-width: 760px;
+            margin: 32px auto 24px;
+            padding: 20px 16px 0;
+            border-top: 1px solid #eee5f8;
+            text-align: center;
+            color: #77718a;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        .pie-creditos strong {
+            color: #542b82;
+        }
+    </style>
 </head>
 
 <body>
@@ -132,6 +150,16 @@
         </section>
 
     </main>
+
+    <footer class="pie-creditos">
+        <p><strong>Vocation Quest</strong> · Proyecto académico</p>
+        <p>
+            Adriana Segura Ceballos ·
+            Maylle Andrea Quesada Enciso ·
+            Karol Juliana Varajas Castro
+        </p>
+        <p>Técnicos en Programación de Software· SENA</p>
+    </footer>
 
 </body>
 </html>
