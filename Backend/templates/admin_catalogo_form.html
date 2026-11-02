@@ -1,0 +1,204 @@
+{% extends "base_admin.html" %}
+
+{% block titulo %}{{ titulo }}{% endblock %}
+
+{% block estilos %}
+{{ super() }}
+<style>
+    .cat-campo {
+        margin-bottom: 20px;
+    }
+
+    .cat-etiqueta,
+    .cat-fieldset legend {
+        display: block;
+        font-weight: bold;
+        font-size: 14px;
+        color: var(--morado-principal);
+        margin-bottom: 7px;
+    }
+
+    .cat-req {
+        color: #b3261e;
+    }
+
+    .cat-campo input[type="text"],
+    .cat-campo input[type="url"],
+    .cat-campo select,
+    .cat-campo textarea {
+        width: 100%;
+        padding: 12px 14px;
+        border: 2px solid var(--borde);
+        border-radius: 12px;
+        font-size: 15px;
+        font-family: inherit;
+        background: #fcfbfe;
+    }
+
+    .cat-campo textarea {
+        min-height: 100px;
+        resize: vertical;
+    }
+
+    .cat-campo input:focus,
+    .cat-campo select:focus,
+    .cat-campo textarea:focus {
+        outline: none;
+        border-color: var(--morado-principal);
+        background: white;
+    }
+
+    .cat-fieldset {
+        border: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .cat-casillas {
+        max-height: 280px;
+        overflow-y: auto;
+        border: 2px solid var(--borde);
+        border-radius: 12px;
+        padding: 8px 12px;
+        background: #fcfbfe;
+    }
+
+    .cat-opcion {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        padding: 7px 0;
+        font-size: 14px;
+        cursor: pointer;
+    }
+
+    .cat-opcion input {
+        margin-top: 3px;
+        flex-shrink: 0;
+    }
+
+    .cat-acciones {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-top: 8px;
+    }
+</style>
+{% endblock %}
+
+{% block contenido_admin %}
+
+    <section class="panel">
+
+        <div class="encabezado-lista">
+            <h2>{{ titulo }}</h2>
+            <a href="{{ url_lista }}" class="boton boton-suave">← Volver a la lista</a>
+        </div>
+
+        {% if error %}
+            <div class="aviso error" role="alert">{{ error }}</div>
+        {% endif %}
+
+        <form method="POST" class="formulario-estrecho">
+
+            {% for campo in campos %}
+
+                <div class="cat-campo">
+
+                    {% if campo.tipo == 'casilla' %}
+
+                        <label class="cat-opcion">
+                            <input type="checkbox" name="{{ campo.nombre }}" value="1"
+                                   {% if campo.marcado %}checked{% endif %}>
+                            <span>{{ campo.etiqueta }}</span>
+                        </label>
+
+                    {% elif campo.tipo == 'casillas' %}
+
+                        <fieldset class="cat-fieldset">
+                            <legend>
+                                {{ campo.etiqueta }}
+                                {% if campo.requerido %}<span class="cat-req">*</span>{% endif %}
+                            </legend>
+
+                            <div class="cat-casillas">
+                                {% for valor, texto in campo.opciones %}
+                                    <label class="cat-opcion">
+                                        <input type="checkbox" name="{{ campo.nombre }}"
+                                               value="{{ valor }}"
+                                               {% if valor in campo.marcadas %}checked{% endif %}>
+                                        <span>{{ texto }}</span>
+                                    </label>
+                                {% else %}
+                                    <p class="campo-ayuda">Todavía no hay opciones disponibles.</p>
+                                {% endfor %}
+                            </div>
+                        </fieldset>
+
+                    {% else %}
+
+                        <label class="cat-etiqueta" for="campo-{{ campo.nombre }}">
+                            {{ campo.etiqueta }}
+                            {% if campo.requerido %}<span class="cat-req">*</span>{% endif %}
+                        </label>
+
+                        {% if campo.tipo == 'area' %}
+
+                            <textarea id="campo-{{ campo.nombre }}" name="{{ campo.nombre }}"
+                                      rows="4">{{ campo.valor }}</textarea>
+
+                        {% elif campo.tipo == 'seleccion' %}
+
+                            <select id="campo-{{ campo.nombre }}" name="{{ campo.nombre }}"
+                                    {% if campo.requerido %}required{% endif %}>
+                                <option value="">{{ campo.marcador }}</option>
+                                {% for valor, texto in campo.opciones %}
+                                    <option value="{{ valor }}"
+                                        {% if (campo.valor or '')|string == valor|string %}selected{% endif %}>
+                                        {{ texto }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+
+                        {% elif campo.tipo == 'sugerido' %}
+
+                            <input type="text" id="campo-{{ campo.nombre }}"
+                                   name="{{ campo.nombre }}" value="{{ campo.valor }}"
+                                   list="lista-{{ campo.nombre }}"
+                                   {% if campo.maximo %}maxlength="{{ campo.maximo }}"{% endif %}>
+                            <datalist id="lista-{{ campo.nombre }}">
+                                {% for sugerencia in campo.sugerencias %}
+                                    <option value="{{ sugerencia }}"></option>
+                                {% endfor %}
+                            </datalist>
+
+                        {% else %}
+
+                            <input type="{{ 'url' if campo.tipo == 'url' else 'text' }}"
+                                   id="campo-{{ campo.nombre }}" name="{{ campo.nombre }}"
+                                   value="{{ campo.valor }}"
+                                   {% if campo.maximo %}maxlength="{{ campo.maximo }}"{% endif %}
+                                   {% if campo.requerido %}required{% endif %}>
+
+                        {% endif %}
+
+                    {% endif %}
+
+                    {% if campo.ayuda %}
+                        <span class="campo-ayuda">{{ campo.ayuda }}</span>
+                    {% endif %}
+
+                </div>
+
+            {% endfor %}
+
+            <div class="cat-acciones">
+                <button type="submit" class="boton boton-principal">{{ texto_boton }}</button>
+                <a href="{{ url_lista }}" class="boton boton-suave">Cancelar</a>
+            </div>
+
+        </form>
+
+    </section>
+
+{% endblock %}

@@ -11,6 +11,15 @@
     <a href="{{ url_for('admin.lista_estudiantes') }}"
        class="{% if seccion == 'estudiantes' %}activo{% endif %}">🎓 Estudiantes</a>
 
+           <a href="{{ url_for('catalogo.lista_carreras') }}"
+       class="{% if seccion == 'carreras' %}activo{% endif %}">📚 Carreras</a>
+
+    <a href="{{ url_for('catalogo.lista_instituciones') }}"
+       class="{% if seccion == 'instituciones' %}activo{% endif %}">🏫 Instituciones</a>
+
+    <a href="{{ url_for('catalogo.lista_programas') }}"
+       class="{% if seccion == 'programas' %}activo{% endif %}">🗂️ Programas</a>
+       
     <a href="{{ url_for('perfil.ver_perfil') }}">👤 Mi perfil</a>
 
     <a href="{{ url_for('auth.logout') }}">Cerrar sesión</a>

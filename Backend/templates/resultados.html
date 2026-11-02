@@ -114,6 +114,7 @@
     <main class="prueba-page">
 
         <header class="logo">
+            {% include "_escudo_encabezado.html" %}
             <span class="logo-icon">✦</span>
             <span>Vocation Quest</span>
         </header>
@@ -121,7 +122,7 @@
         <section class="prueba-container">
 
             <div class="prueba-header">
-                <p class="etiqueta">NIVEL 5</p>
+                <p class="TU RESULTADO FINAL">NIVEL 5</p>
 
                 <h1>Mi resultado</h1>
 
@@ -202,6 +203,11 @@
                                                             <strong>{{ programa.nombre }}</strong>
                                                             · {{ programa.institucion }}
 
+                                                            {% if programa.detalle %}
+                                                                <br>
+                                                                <small>{{ programa.detalle }}</small>
+                                                            {% endif %}
+                                                            
                                                             {% if programa.descripcion %}
                                                                 <br>
                                                                 <small>{{ programa.descripcion }}</small>
@@ -347,6 +353,7 @@
     </main>
 
     <footer class="pie-creditos">
+        {% include "_escudo_pie.html" %}
         <p><strong>Vocation Quest</strong> · Proyecto académico</p>
         <p>
             Adriana Segura Ceballos ·

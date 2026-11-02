@@ -14,6 +14,18 @@ ETIQUETAS_TIPO = {
     "curso": "Curso"
 }
 
+ETIQUETAS_MODALIDAD = {
+    "presencial": "Presencial",
+    "distancia": "A distancia",
+    "virtual": "Virtual",
+    "mixta": "Mixta"
+}
+
+ETIQUETAS_SECTOR = {
+    "publica": "Pública",
+    "privada": "Privada"
+}
+
 # =========================================
 # BUSCAR ESTUDIANTE
 # =========================================
@@ -1019,9 +1031,11 @@ def ver_resultados():
 
                     cursor.execute(
                         """
-                        SELECT p.nombre, p.tipo, p.descripcion, p.duracion,
+                            SELECT p.nombre, p.tipo, p.descripcion, p.duracion,
+                               p.ciudad, p.modalidad,
                                p.sitio_web AS enlace_programa,
                                i.nombre AS institucion,
+                               i.sector,
                                i.sitio_web AS enlace_institucion
                         FROM programas p
                         INNER JOIN programa_carrera pc
@@ -1042,6 +1056,29 @@ def ver_resultados():
                         programa["tipo_texto"] = ETIQUETAS_TIPO.get(
                             programa["tipo"], programa["tipo"]
                         )
+
+                        partes = []
+
+                        if programa["sector"]:
+                            partes.append(
+                                ETIQUETAS_SECTOR.get(
+                                    programa["sector"], programa["sector"]
+                                )
+                            )
+
+                        if programa["ciudad"]:
+                            partes.append(programa["ciudad"])
+
+                        if programa["modalidad"]:
+                            partes.append(
+                                ETIQUETAS_MODALIDAD.get(
+                                    programa["modalidad"], programa["modalidad"]
+                                )
+                            )
+
+                        programa["detalle"] = " · ".join(partes)
+
+                    carrera["programas"] = programas
 
                     carrera["programas"] = programas
 
