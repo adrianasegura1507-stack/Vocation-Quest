@@ -1009,7 +1009,7 @@
         }
 
         .pie-creditos strong {
-            color: #542b82;
+            color: white;
         }
     </style>
 </head>
@@ -1022,7 +1022,7 @@
 
     <header>
         <div class="logo">
-            <div class="logo-icon">🐾</div>
+            {% include "_logo_icono_claro.html" %}
 
             <div class="logo-text">
                 <h1>Vocation Quest</h1>
@@ -1035,6 +1035,8 @@
                 <span class="status-dot"></span>
                 Aventura en progreso
             </div>
+            
+            <a href="{{ url_for('explorar.lista') }}" class="logout">🔎 Explorar</a>
 
             <a href="{{ url_for('perfil.ver_perfil') }}" class="logout">👤 Mi perfil</a>
         </div>
@@ -1359,6 +1361,7 @@
     </main>
 
     <footer class="pie-creditos">
+        {% include "_escudo_pie.html" %}
         <p><strong>Vocation Quest</strong> · Proyecto académico</p>
         <p>
             Adriana Segura Ceballos ·

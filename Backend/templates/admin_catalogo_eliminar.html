@@ -1,0 +1,49 @@
+{% extends "base_admin.html" %}
+
+{% block titulo %}Eliminar{% endblock %}
+
+{% block estilos %}
+{{ super() }}
+<style>
+    .cat-peligro {
+        background: #b3261e;
+        color: white;
+        border: none;
+        cursor: pointer;
+    }
+
+    .cat-peligro:hover {
+        background: #8c1d18;
+    }
+
+    .cat-acciones {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-top: 18px;
+    }
+</style>
+{% endblock %}
+
+{% block contenido_admin %}
+
+    <section class="panel formulario-estrecho">
+
+        <h2>¿Eliminar {{ singular }}?</h2>
+
+        <p class="descripcion"><strong>«{{ nombre }}»</strong></p>
+
+        <div class="aviso error" role="alert">{{ aviso }}</div>
+
+        <p class="descripcion">Esta acción no se puede deshacer.</p>
+
+        <form method="POST">
+            <div class="cat-acciones">
+                <button type="submit" class="boton cat-peligro">Sí, eliminar</button>
+                <a href="{{ url_lista }}" class="boton boton-suave">No, volver</a>
+            </div>
+        </form>
+
+    </section>
+
+{% endblock %}

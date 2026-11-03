@@ -114,14 +114,15 @@
     <main class="prueba-page">
 
         <header class="logo">
-            <span class="logo-icon">✦</span>
+            {% include "_escudo_encabezado.html" %}
+            {% include "_logo_icono.html" %}
             <span>Vocation Quest</span>
         </header>
 
         <section class="prueba-container">
 
             <div class="prueba-header">
-                <p class="etiqueta">NIVEL 5</p>
+                <p class="TU RESULTADO FINAL">NIVEL 5</p>
 
                 <h1>Mi resultado</h1>
 
@@ -178,7 +179,7 @@
 
                                         <div class="ruta-carrera">
 
-                                            <h4>{{ carrera.nombre }}</h4>
+                                            <h4><a href="{{ url_for('explorar.ver_carrera', id_carrera=carrera.id_carrera) }}" style="color: inherit;">{{ carrera.nombre }}</a></h4>
 
                                             {% if carrera.descripcion %}
                                                 <p>{{ carrera.descripcion }}</p>
@@ -202,6 +203,11 @@
                                                             <strong>{{ programa.nombre }}</strong>
                                                             · {{ programa.institucion }}
 
+                                                            {% if programa.detalle %}
+                                                                <br>
+                                                                <small>{{ programa.detalle }}</small>
+                                                            {% endif %}
+                                                            
                                                             {% if programa.descripcion %}
                                                                 <br>
                                                                 <small>{{ programa.descripcion }}</small>
@@ -336,6 +342,10 @@
                             🗺️ Volver a mi aventura
                         </a>
 
+                        <a href="{{ url_for('explorar.lista') }}"
+                           class="btn-siguiente">
+                            🔎 Explorar más carreras
+                        </a>                        
                     </div>
 
                 </div>
@@ -347,6 +357,7 @@
     </main>
 
     <footer class="pie-creditos">
+        {% include "_escudo_pie.html" %}
         <p><strong>Vocation Quest</strong> · Proyecto académico</p>
         <p>
             Adriana Segura Ceballos ·
