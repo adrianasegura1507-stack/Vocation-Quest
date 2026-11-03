@@ -1,10 +1,11 @@
 import os
-from flask import Flask, render_template, session, redirect, url_for
+from flask import Flask, render_template, session, redirect, url_for, send_from_directory
 from routes.auth import auth
 from routes.pruebas import pruebas, NIVELES_PRUEBA
 from routes.perfil import perfil
 from routes.admin import admin
 from routes.catalogo import catalogo
+from routes.explorar import explorar
 from database import obtener_conexion
 
 app = Flask(__name__)
@@ -16,6 +17,7 @@ app.register_blueprint(pruebas)
 app.register_blueprint(perfil)
 app.register_blueprint(admin)
 app.register_blueprint(catalogo)
+app.register_blueprint(explorar)
 
 # =========================================
 # ICONOS DE LOS LOGROS
@@ -62,7 +64,10 @@ def logro_cumplido(tipo, niveles_completados, preguntas_respondidas):
 @app.route("/")
 def inicio():
     return render_template("index.html")
-
+    
+@app.route("/favicon.ico")
+def favicon():
+    return send_from_directory(app.static_folder, "favicon.ico")
 
 @app.route("/inicio-estudiante")
 def inicio_estudiante():

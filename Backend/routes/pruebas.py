@@ -1080,8 +1080,6 @@ def ver_resultados():
 
                     carrera["programas"] = programas
 
-                    carrera["programas"] = programas
-
                 recomendaciones.append({
                     "area": area,
                     "carreras": carreras

@@ -115,7 +115,7 @@
 
         <header class="logo">
             {% include "_escudo_encabezado.html" %}
-            <span class="logo-icon">✦</span>
+            {% include "_logo_icono.html" %}
             <span>Vocation Quest</span>
         </header>
 
@@ -179,7 +179,7 @@
 
                                         <div class="ruta-carrera">
 
-                                            <h4>{{ carrera.nombre }}</h4>
+                                            <h4><a href="{{ url_for('explorar.ver_carrera', id_carrera=carrera.id_carrera) }}" style="color: inherit;">{{ carrera.nombre }}</a></h4>
 
                                             {% if carrera.descripcion %}
                                                 <p>{{ carrera.descripcion }}</p>
@@ -342,6 +342,10 @@
                             🗺️ Volver a mi aventura
                         </a>
 
+                        <a href="{{ url_for('explorar.lista') }}"
+                           class="btn-siguiente">
+                            🔎 Explorar más carreras
+                        </a>                        
                     </div>
 
                 </div>

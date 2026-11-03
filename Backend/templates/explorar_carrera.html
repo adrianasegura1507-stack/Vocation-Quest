@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{{ carrera.nombre }} | Vocation Quest</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+
+    <style>
+        .ex-contenedor {
+            width: 100%;
+            max-width: 900px;
+            margin: 26px auto 0;
+        }
+
+        .ex-volver {
+            margin-bottom: 18px;
+        }
+
+        .ex-card {
+            background: white;
+            border: 1px solid #e9e5f1;
+            border-radius: 22px;
+            padding: 26px;
+            box-shadow: 0 8px 25px rgba(62, 39, 87, 0.06);
+            margin-bottom: 24px;
+        }
+
+        .ex-card h1 {
+            color: #29213d;
+            font-size: 28px;
+            margin: 10px 0 12px;
+        }
+
+        .ex-card h2 {
+            color: #542b82;
+            font-size: 19px;
+            margin-bottom: 14px;
+        }
+
+        .ex-card p {
+            color: #29213d;
+            line-height: 1.6;
+            margin-bottom: 12px;
+        }
+
+        .ex-card p strong {
+            color: #542b82;
+        }
+
+        .ex-areas {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .ex-chip {
+            display: inline-block;
+            padding: 3px 10px;
+            background: #eee5f8;
+            color: #542b82;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .ex-chip.verde {
+            background: #e8f8ed;
+            color: #2f6b46;
+        }
+
+        .ex-selects {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 12px;
+        }
+
+        .ex-selects select {
+            width: 100%;
+            padding: 12px 14px;
+            border: 2px solid #e9e5f1;
+            border-radius: 12px;
+            font-size: 14px;
+            font-family: inherit;
+            background: #fcfbfe;
+        }
+
+        .ex-selects select:focus {
+            outline: none;
+            border-color: #542b82;
+            background: white;
+        }
+
+        .ex-acciones {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 16px;
+        }
+
+        .ex-cuenta {
+            color: #77718a;
+            font-size: 14px;
+            margin-bottom: 14px;
+        }
+
+        .ex-programa {
+            background: white;
+            border: 1px solid #e9e5f1;
+            border-left: 5px solid #8ed6a5;
+            border-radius: 16px;
+            padding: 18px 20px;
+            margin-bottom: 14px;
+            box-shadow: 0 5px 14px rgba(62, 39, 87, 0.05);
+        }
+
+        .ex-programa h3 {
+            color: #29213d;
+            font-size: 17px;
+            margin: 8px 0 4px;
+        }
+
+        .ex-programa p {
+            color: #29213d;
+            font-size: 14px;
+            line-height: 1.5;
+            margin-bottom: 6px;
+        }
+
+        .ex-programa p.ex-meta {
+            color: #77718a;
+        }
+
+        .ex-programa a {
+            color: #542b82;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .ex-vacio {
+            text-align: center;
+            color: #77718a;
+            padding: 30px 10px;
+        }
+
+        .ex-pie {
+            max-width: 760px;
+            margin: 34px auto 24px;
+            padding: 20px 16px 0;
+            border-top: 1px solid #eee5f8;
+            text-align: center;
+            color: #77718a;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        .ex-pie strong {
+            color: #542b82;
+        }
+    </style>
+</head>
+
+<body>
+
+    <main class="prueba-page">
+
+        <header class="logo">
+            {% include "_escudo_encabezado.html" %}
+            {% include "_logo_icono.html" %}
+            <span>Vocation Quest</span>
+        </header>
+
+        <section class="ex-contenedor">
+
+            <div class="ex-volver">
+                <a href="{{ volver_url }}" class="btn-anterior">← {{ volver_texto }}</a>
+            </div>
+
+            <!-- La carrera -->
+
+            <div class="ex-card">
+
+                {% if areas %}
+                    <div class="ex-areas">
+                        {% for area in areas %}
+                            <span class="ex-chip">{{ area }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                <h1>{{ carrera.nombre }}</h1>
+
+                {% if carrera.descripcion %}
+                    <p>{{ carrera.descripcion }}</p>
+                {% endif %}
+
+                {% if carrera.perfil_profesional %}
+                    <p><strong>Perfil profesional:</strong> {{ carrera.perfil_profesional }}</p>
+                {% endif %}
+
+                {% if carrera.campo_laboral %}
+                    <p><strong>Dónde podrías trabajar:</strong> {{ carrera.campo_laboral }}</p>
+                {% endif %}
+
+            </div>
+
+            <!-- Dónde estudiarla -->
+
+            <div class="ex-card">
+
+                <h2>Dónde estudiarla</h2>
+
+                {% if total_programas %}
+
+                    {% if ciudades|length > 1 or tipos|length > 1 or modalidades|length > 1 or sectores|length > 1 %}
+
+                        <form method="GET"
+                              action="{{ url_for('explorar.ver_carrera', id_carrera=carrera.id_carrera) }}">
+
+                            <div class="ex-selects">
+
+                                {% if ciudades|length > 1 %}
+                                    <select name="ciudad" aria-label="Ciudad">
+                                        <option value="">Todas las ciudades</option>
+                                        {% for c in ciudades %}
+                                            <option value="{{ c }}"
+                                                {% if activos.ciudad == c %}selected{% endif %}>{{ c }}</option>
+                                        {% endfor %}
+                                    </select>
+                                {% endif %}
+
+                                {% if tipos|length > 1 %}
+                                    <select name="tipo" aria-label="Tipo de programa">
+                                        <option value="">Todos los tipos</option>
+                                        {% for valor, texto in tipos %}
+                                            <option value="{{ valor }}"
+                                                {% if activos.tipo == valor %}selected{% endif %}>{{ texto }}</option>
+                                        {% endfor %}
+                                    </select>
+                                {% endif %}
+
+                                {% if modalidades|length > 1 %}
+                                    <select name="modalidad" aria-label="Modalidad">
+                                        <option value="">Cualquier modalidad</option>
+                                        {% for valor, texto in modalidades %}
+                                            <option value="{{ valor }}"
+                                                {% if activos.modalidad == valor %}selected{% endif %}>{{ texto }}</option>
+                                        {% endfor %}
+                                    </select>
+                                {% endif %}
+
+                                {% if sectores|length > 1 %}
+                                    <select name="sector" aria-label="Pública o privada">
+                                        <option value="">Pública o privada</option>
+                                        {% for valor, texto in sectores %}
+                                            <option value="{{ valor }}"
+                                                {% if activos.sector == valor %}selected{% endif %}>{{ texto }}</option>
+                                        {% endfor %}
+                                    </select>
+                                {% endif %}
+
+                            </div>
+
+                            <div class="ex-acciones">
+                                <button type="submit" class="btn-siguiente">Filtrar</button>
+
+                                {% if hay_filtros %}
+                                    <a href="{{ url_for('explorar.ver_carrera', id_carrera=carrera.id_carrera) }}"
+                                       class="btn-anterior">Limpiar filtros</a>
+                                {% endif %}
+                            </div>
+
+                        </form>
+
+                    {% endif %}
+
+                    <p class="ex-cuenta" style="margin-top: 18px;">
+                        Mostrando {{ programas|length }} de {{ total_programas }}
+                        programa{{ '' if total_programas == 1 else 's' }}
+                    </p>
+
+                    {% for p in programas %}
+
+                        <article class="ex-programa">
+
+                            <span class="ex-chip">{{ p.tipo_texto }}</span>
+
+                            {% if p.sector_texto %}
+                                <span class="ex-chip verde">{{ p.sector_texto }}</span>
+                            {% endif %}
+
+                            <h3>{{ p.nombre }}</h3>
+
+                            <p><strong>{{ p.institucion }}</strong></p>
+
+                            {% if p.sede %}
+                                <p class="ex-meta">📍 {{ p.sede }}</p>
+                            {% endif %}
+
+                            <p class="ex-meta">
+                                Duración: {{ p.duracion or "consúltala en el sitio oficial" }}
+                            </p>
+
+                            {% if p.descripcion %}
+                                <p>{{ p.descripcion }}</p>
+                            {% endif %}
+
+                            {% if p.enlace %}
+                                <a href="{{ p.enlace }}" target="_blank" rel="noopener noreferrer">
+                                    Ver sitio oficial →
+                                </a>
+                            {% endif %}
+
+                        </article>
+
+                    {% else %}
+
+                        <div class="ex-vacio">
+                            Ningún programa cumple esos filtros. Prueba quitando alguno.
+                        </div>
+
+                    {% endfor %}
+
+                {% else %}
+
+                    <div class="ex-vacio">
+                        Aún no tenemos programas cargados para esta carrera.
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+            <div class="ex-acciones">
+                <a href="{{ inicio_url }}" class="btn-anterior">{{ inicio_texto }}</a>
+            </div>
+
+        </section>
+
+    </main>
+
+    <footer class="ex-pie">
+        {% include "_escudo_pie.html" %}
+        <p><strong>Vocation Quest</strong> · Proyecto académico</p>
+        <p>La información cambia: confirma siempre en el sitio oficial de cada institución.</p>
+    </footer>
+
+</body>
+</html>
