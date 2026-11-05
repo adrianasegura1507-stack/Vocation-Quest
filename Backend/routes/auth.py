@@ -7,6 +7,7 @@ from flask import (
 )
 from werkzeug.security import generate_password_hash, check_password_hash
 from database import obtener_conexion
+from correo import validar_dominio_correo, enviar_correo_bienvenida
 
 auth = Blueprint("auth", __name__)
 
@@ -175,6 +176,12 @@ def registro():
         if error:
             return mostrar_registro(error, datos)
 
+        # Comprobar que el dominio del correo exista
+        error = validar_dominio_correo(correo)
+
+        if error:
+            return mostrar_registro(error, datos)
+
         fecha_nacimiento, edad, error = validar_fecha_nacimiento(fecha_texto)
 
         if error:
@@ -233,6 +240,8 @@ def registro():
             )
 
             conexion.commit()
+            # Enviar correo de bienvenida después de crear la cuenta
+            enviar_correo_bienvenida(nombre, correo)
 
             # Iniciar sesión automáticamente después del registro
             session["id_usuario"] = id_usuario
