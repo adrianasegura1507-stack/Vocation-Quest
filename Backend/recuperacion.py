@@ -82,7 +82,8 @@ def guardar_codigo_recuperacion(id_usuario, codigo_hash):
 
 def registrar_intento_fallido(id_recuperacion):
     """
-    Aumenta en uno el contador de intentos fallidos.
+    Aumenta el contador de intentos fallidos.
+    Al llegar a cinco intentos, invalida el codigo.
     """
 
     conexion = None
@@ -95,8 +96,15 @@ def registrar_intento_fallido(id_recuperacion):
         cursor.execute(
             """
             UPDATE recuperacion_contrasena
-            SET intentos = intentos + 1
+            SET
+                usado = CASE
+                    WHEN intentos >= 4 THEN 1
+                    ELSE usado
+                END,
+                intentos = intentos + 1
             WHERE id_recuperacion = %s
+            AND usado = 0
+            AND intentos < 5
             """,
             (id_recuperacion,)
         )
@@ -118,3 +126,4 @@ def registrar_intento_fallido(id_recuperacion):
 
         if conexion:
             conexion.close()
+            
