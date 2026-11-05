@@ -75,3 +75,46 @@ def guardar_codigo_recuperacion(id_usuario, codigo_hash):
 
         if conexion:
             conexion.close()
+
+# =========================================
+# REGISTRAR INTENTO FALLIDO
+# =========================================
+
+def registrar_intento_fallido(id_recuperacion):
+    """
+    Aumenta en uno el contador de intentos fallidos.
+    """
+
+    conexion = None
+    cursor = None
+
+    try:
+        conexion = obtener_conexion()
+        cursor = conexion.cursor()
+
+        cursor.execute(
+            """
+            UPDATE recuperacion_contrasena
+            SET intentos = intentos + 1
+            WHERE id_recuperacion = %s
+            """,
+            (id_recuperacion,)
+        )
+
+        conexion.commit()
+
+        return cursor.rowcount > 0
+
+    except Exception as error:
+        if conexion:
+            conexion.rollback()
+
+        print(f"Error al registrar el intento: {error}")
+        return False
+
+    finally:
+        if cursor:
+            cursor.close()
+
+        if conexion:
+            conexion.close()
