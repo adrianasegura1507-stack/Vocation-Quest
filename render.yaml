@@ -5,6 +5,8 @@
     buildCommand: pip install -r requirements.txt
     startCommand: gunicorn --chdir Backend app:app
     envVars:
+      - key: APP_ENV
+        value: production
       - key: SECRET_KEY
         generateValue: true
       - key: DB_HOST
