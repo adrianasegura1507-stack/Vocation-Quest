@@ -4,6 +4,7 @@ CREATE TABLE IF NOT EXISTS recuperacion_contrasena (
     codigo_hash VARCHAR(255) NOT NULL,
     expira_en DATETIME NOT NULL,
     usado TINYINT(1) NOT NULL DEFAULT 0,
+    intentos INT NOT NULL DEFAULT 0,
     creado_en DATETIME DEFAULT CURRENT_TIMESTAMP,
 
     FOREIGN KEY (id_usuario)

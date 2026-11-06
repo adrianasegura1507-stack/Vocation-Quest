@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nueva contraseña | Vocation Quest</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}"
+    >
+</head>
+
+<body>
+
+    <main class="registro-page">
+
+        <header class="logo">
+            {% include "_escudo_encabezado.html" %}
+            {% include "_logo_icono.html" %}
+            <span>Vocation Quest</span>
+        </header>
+
+        <section class="registro-container">
+
+            <div class="avatar-section">
+                <div class="avatar">🔑</div>
+
+                <h2>¡Ya casi terminas!</h2>
+
+                <p>
+                    Crea una contraseña nueva para volver
+                    a disfrutar tu aventura en Vocation Quest.
+                </p>
+
+                <div class="decoracion decoracion-1"></div>
+                <div class="decoracion decoracion-2"></div>
+            </div>
+
+            <div class="registro-card">
+
+                <div class="titulo">
+                    <p class="etiqueta">RECUPERACIÓN DE CUENTA</p>
+                    <h1>Nueva contraseña</h1>
+
+                    <p>
+                        Escribe y confirma tu nueva contraseña.
+                    </p>
+                </div>
+
+                {% with mensajes = get_flashed_messages(with_categories=true) %}
+                    {% for categoria, mensaje in mensajes %}
+                        <div role="alert">
+                            {{ mensaje }}
+                        </div>
+                    {% endfor %}
+                {% endwith %}
+
+                <form
+                    action="{{ url_for('auth.restablecer_contrasena') }}"
+                    method="POST"
+                >
+
+                    <div class="campo">
+                        <label for="contrasena">Nueva contraseña</label>
+
+                        <input
+                            type="password"
+                            id="contrasena"
+                            name="contrasena"
+                            minlength="8"
+                            maxlength="255"
+                            placeholder="Mínimo 8 caracteres"
+                            required
+                        >
+                    </div>
+
+                    <div class="campo">
+                        <label for="confirmar">Confirmar contraseña</label>
+
+                        <input
+                            type="password"
+                            id="confirmar"
+                            name="confirmar"
+                            minlength="8"
+                            maxlength="255"
+                            placeholder="Repite tu contraseña"
+                            required
+                        >
+                    </div>
+
+                    <button type="submit" class="btn-registrar">
+                        Actualizar contraseña
+                        <span>→</span>
+                    </button>
+
+                </form>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</body>
+</html>
