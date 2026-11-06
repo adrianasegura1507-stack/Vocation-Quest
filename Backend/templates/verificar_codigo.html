@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verificar código | Vocation Quest</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}"
+    >
+</head>
+
+<body>
+
+    <main class="registro-page">
+
+        <header class="logo">
+            {% include "_escudo_encabezado.html" %}
+            {% include "_logo_icono.html" %}
+            <span>Vocation Quest</span>
+        </header>
+
+        <section class="registro-container">
+
+            <div class="avatar-section">
+                <div class="avatar">🔐</div>
+
+                <h2>¡Verifiquemos tu identidad!</h2>
+
+                <p>
+                    Introduce el código que enviamos a tu correo
+                    para continuar recuperando tu cuenta.
+                </p>
+
+                <div class="decoracion decoracion-1"></div>
+                <div class="decoracion decoracion-2"></div>
+            </div>
+
+            <div class="registro-card">
+
+                <div class="titulo">
+                    <p class="etiqueta">RECUPERACIÓN DE CUENTA</p>
+                    <h1>Verificar código</h1>
+
+                    <p>
+                        El código tiene una vigencia de 10 minutos.
+                    </p>
+                </div>
+
+                {% with mensajes = get_flashed_messages(with_categories=true) %}
+                    {% for categoria, mensaje in mensajes %}
+                        <div role="alert">
+                            {{ mensaje }}
+                        </div>
+                    {% endfor %}
+                {% endwith %}
+
+                <form
+                    action="{{ url_for('auth.verificar_codigo') }}"
+                    method="POST"
+                >
+
+                    <div class="campo">
+                        <label for="correo">Correo electrónico</label>
+
+                        <input
+                            type="email"
+                            id="correo"
+                            name="correo"
+                            placeholder="ejemplo@correo.com"
+                            required
+                        >
+                    </div>
+
+                    <div class="campo">
+                        <label for="codigo">Código de seis dígitos</label>
+
+                        <input
+                            type="text"
+                            id="codigo"
+                            name="codigo"
+                            minlength="6"
+                            maxlength="6"
+                            pattern="[0-9]{6}"
+                            inputmode="numeric"
+                            placeholder="000000"
+                            required
+                        >
+                    </div>
+
+                    <button type="submit" class="btn-registrar">
+                        Verificar código
+                        <span>→</span>
+                    </button>
+
+                </form>
+
+                <div class="login-link">
+                    <a href="{{ url_for('auth.recuperar_contrasena') }}">
+                        Solicitar otro código
+                    </a>
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</body>
+</html>

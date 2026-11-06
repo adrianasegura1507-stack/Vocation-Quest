@@ -462,6 +462,26 @@ input::placeholder {
     text-decoration: underline;
 }
 
+/* ENLACE PARA RECUPERAR CONTRASEÑA */
+
+.recuperar-link {
+    text-align: right;
+    margin: -6px 0 18px;
+    font-size: 13px;
+}
+
+.recuperar-link a {
+    color: #542b82;
+    font-weight: bold;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.recuperar-link a:hover {
+    color: #392052;
+    text-decoration: underline;
+}
+
 
 /* =========================
    RESPONSIVE

@@ -7,6 +7,17 @@ from flask import (
 )
 from werkzeug.security import generate_password_hash, check_password_hash
 from database import obtener_conexion
+from correo import (
+    validar_dominio_correo,
+    enviar_correo_bienvenida,
+    enviar_codigo_recuperacion
+)
+
+from recuperacion import (
+    generar_codigo_recuperacion,
+    guardar_codigo_recuperacion,
+    registrar_intento_fallido
+)
 
 auth = Blueprint("auth", __name__)
 
@@ -175,6 +186,12 @@ def registro():
         if error:
             return mostrar_registro(error, datos)
 
+        # Comprobar que el dominio del correo exista
+        error = validar_dominio_correo(correo)
+
+        if error:
+            return mostrar_registro(error, datos)
+
         fecha_nacimiento, edad, error = validar_fecha_nacimiento(fecha_texto)
 
         if error:
@@ -233,6 +250,8 @@ def registro():
             )
 
             conexion.commit()
+            # Enviar correo de bienvenida después de crear la cuenta
+            enviar_correo_bienvenida(nombre, correo)
 
             # Iniciar sesión automáticamente después del registro
             session["id_usuario"] = id_usuario
@@ -351,6 +370,279 @@ def logout():
     session.clear()
     return redirect(url_for("inicio"))
 
+# =========================================
+# SOLICITAR RECUPERACION DE CONTRASENA
+# =========================================
+
+@auth.route("/recuperar-contrasena", methods=["GET", "POST"])
+def recuperar_contrasena():
+
+    if request.method == "POST":
+
+        print("[RECUPERACION] Solicitud POST recibida.", flush=True)
+        correo = request.form.get("correo", "").strip()
+        print("[RECUPERACION] Correo recibido en el formulario.", flush=True)
+
+        mensaje = (
+            "Si el correo pertenece a una cuenta activa, "
+            "recibirás instrucciones para recuperar tu contraseña."
+        )
+
+        if not correo or validar_correo(correo):
+            print("[RECUPERACION] Correo vacio o formato invalido.", flush=True)
+            flash(mensaje)
+            return redirect(url_for("auth.recuperar_contrasena"))
+
+        conexion = None
+        cursor = None
+
+        try:
+            conexion = obtener_conexion()
+            print("[RECUPERACION] Conexion MySQL establecida.", flush=True)
+            cursor = conexion.cursor(dictionary=True)
+
+            cursor.execute(
+                """
+                SELECT id_usuario
+                FROM usuarios
+                WHERE correo = %s
+                AND estado = 1
+                AND rol = 'estudiante'
+                """,
+                (correo,)
+            )
+
+            usuario = cursor.fetchone()
+            print(f"[RECUPERACION] Usuario encontrado: {bool(usuario)}", flush=True)
+
+            if usuario:
+                codigo, codigo_hash = generar_codigo_recuperacion()
+
+                cursor.execute(
+                    """
+                    UPDATE recuperacion_contrasena
+                    SET usado = 1
+                    WHERE id_usuario = %s
+                    AND usado = 0
+                    """,
+                    (usuario["id_usuario"],)
+                )
+
+                conexion.commit()
+
+                id_recuperacion = guardar_codigo_recuperacion(
+                    usuario["id_usuario"],
+                    codigo_hash
+                )
+                print(f"[RECUPERACION] ID guardado: {id_recuperacion}", flush=True)
+
+                if id_recuperacion:
+                    print("[RECUPERACION] Intentando enviar correo...", flush=True)
+                    enviado = enviar_codigo_recuperacion(
+                        correo,
+                        codigo
+                    )
+                    print(f"[RECUPERACION] Resultado del envio: {enviado}", flush=True)
+
+                    if not enviado:
+                        print("[RECUPERACION] Envio fallido. Invalidando codigo.", flush=True)
+                        cursor.execute(
+                            """
+                            UPDATE recuperacion_contrasena
+                            SET usado = 1
+                            WHERE id_recuperacion = %s
+                            """,
+                            (id_recuperacion,)
+                        )
+                        conexion.commit()
+                else:
+                    print("[RECUPERACION] No se pudo guardar el codigo en MySQL.", flush=True)
+
+            else:
+                print("[RECUPERACION] No se encontro una cuenta activa de estudiante.", flush=True)
+
+            flash(mensaje)
+
+        except Exception as error:
+            if conexion:
+                conexion.rollback()
+
+            print(f"[RECUPERACION] ERROR EN LA RUTA: {type(error).__name__}: {error}", flush=True)
+            flash(mensaje)
+
+        finally:
+            if cursor:
+                cursor.close()
+
+            if conexion:
+                conexion.close()
+
+        return redirect(url_for("auth.verificar_codigo"))
+
+    return render_template("recuperar_contrasena.html")
+
+# =========================================
+# VERIFICAR CODIGO DE RECUPERACION
+# =========================================
+
+@auth.route("/verificar-codigo", methods=["GET", "POST"])
+def verificar_codigo():
+
+    if request.method == "POST":
+        correo = request.form.get("correo", "").strip()
+        codigo = request.form.get("codigo", "").strip()
+
+        if not re.fullmatch(r"\d{6}", codigo):
+            flash("El código no es válido o ha vencido.")
+            return redirect(url_for("auth.verificar_codigo"))
+
+        conexion = None
+        cursor = None
+
+        try:
+            conexion = obtener_conexion()
+            cursor = conexion.cursor(dictionary=True)
+
+            cursor.execute(
+                """
+                SELECT r.id_recuperacion, r.codigo_hash, r.id_usuario
+                FROM recuperacion_contrasena r
+                INNER JOIN usuarios u
+                    ON r.id_usuario = u.id_usuario
+                WHERE u.correo = %s
+                AND u.estado = 1
+                AND u.rol = 'estudiante'
+                AND r.usado = 0
+                AND r.expira_en > NOW()
+                AND r.intentos < 5
+                ORDER BY r.creado_en DESC
+                LIMIT 1
+                """,
+                (correo,)
+            )
+
+            recuperacion = cursor.fetchone()
+
+            if recuperacion is None or not check_password_hash(
+                recuperacion["codigo_hash"], codigo
+            ):
+                if recuperacion:
+                    registrar_intento_fallido(
+                        recuperacion["id_recuperacion"]
+                    )
+
+                flash("El código no es válido o ha vencido.")
+                return redirect(url_for("auth.verificar_codigo"))
+
+            session["id_recuperacion"] = recuperacion["id_recuperacion"]
+
+            flash("Código verificado correctamente.")
+            return redirect(url_for("auth.restablecer_contrasena"))
+
+        except Exception as error:
+            print(f"Error al verificar el código: {error}")
+            flash("No fue posible verificar el código.")
+
+        finally:
+            if cursor:
+                cursor.close()
+            if conexion:
+                conexion.close()
+
+    return render_template("verificar_codigo.html")
+
+
+# =========================================
+# RESTABLECER CONTRASEÑA
+# =========================================
+
+@auth.route("/restablecer-contrasena", methods=["GET", "POST"])
+def restablecer_contrasena():
+
+    id_recuperacion = session.get("id_recuperacion")
+
+    if not id_recuperacion:
+        flash("Primero debes verificar tu código.")
+        return redirect(url_for("auth.recuperar_contrasena"))
+
+    conexion = None
+    cursor = None
+
+    try:
+        conexion = obtener_conexion()
+        cursor = conexion.cursor(dictionary=True)
+
+        cursor.execute(
+            """
+            SELECT id_usuario
+            FROM recuperacion_contrasena
+            WHERE id_recuperacion = %s
+            AND usado = 0
+            AND expira_en > NOW()
+            AND intentos < 5
+            """,
+            (id_recuperacion,)
+        )
+
+        recuperacion = cursor.fetchone()
+
+        if recuperacion is None:
+            session.pop("id_recuperacion", None)
+            flash("El código ha vencido o ya fue utilizado.")
+            return redirect(url_for("auth.recuperar_contrasena"))
+
+        if request.method == "POST":
+            contrasena = request.form.get("contrasena", "")
+            confirmar = request.form.get("confirmar", "")
+
+            error = validar_contrasena(contrasena)
+
+            if error:
+                flash(error)
+            elif contrasena != confirmar:
+                flash("Las contraseñas no coinciden.")
+            else:
+                contrasena_segura = generate_password_hash(contrasena)
+
+                cursor.execute(
+                    """
+                    UPDATE usuarios
+                    SET contrasena = %s
+                    WHERE id_usuario = %s
+                    """,
+                    (contrasena_segura, recuperacion["id_usuario"])
+                )
+
+                cursor.execute(
+                    """
+                    UPDATE recuperacion_contrasena
+                    SET usado = 1
+                    WHERE id_recuperacion = %s
+                    """,
+                    (id_recuperacion,)
+                )
+
+                conexion.commit()
+
+                session.pop("id_recuperacion", None)
+
+                flash("Tu contraseña fue actualizada correctamente.")
+                return redirect(url_for("auth.login"))
+
+    except Exception as error:
+        if conexion:
+            conexion.rollback()
+
+        print(f"Error al restablecer la contraseña: {error}")
+        flash("No fue posible actualizar la contraseña.")
+
+    finally:
+        if cursor:
+            cursor.close()
+        if conexion:
+            conexion.close()
+
+    return render_template("restablecer_contrasena.html")
 
 # =========================================
 # REVISAR QUE LA CUENTA SIGA ACTIVA

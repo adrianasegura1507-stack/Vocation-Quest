@@ -1,4 +1,4 @@
-import os
+﻿import os
 from flask import Flask, render_template, session, redirect, url_for, send_from_directory
 from routes.auth import auth
 from routes.pruebas import pruebas, NIVELES_PRUEBA
@@ -10,7 +10,12 @@ from database import obtener_conexion
 
 app = Flask(__name__)
 
-app.secret_key = os.environ.get("SECRET_KEY", "vocation_quest_clave_secreta")
+clave_secreta = os.environ.get("SECRET_KEY")
+
+if not clave_secreta and os.environ.get("APP_ENV") == "production":
+    raise RuntimeError("Falta configurar la variable SECRET_KEY.")
+
+app.secret_key = clave_secreta or "clave-local-desarrollo"
 
 app.register_blueprint(auth)
 app.register_blueprint(pruebas)
@@ -22,16 +27,16 @@ app.register_blueprint(explorar)
 # =========================================
 # ICONOS DE LOS LOGROS
 # =========================================
-# La tabla "logros" no tiene columna de icono, así que
-# lo elegimos según el campo "tipo" del logro.
+# La tabla "logros" no tiene columna de icono, asÃ­ que
+# lo elegimos segÃºn el campo "tipo" del logro.
 
 ICONOS_LOGROS = {
-    "preguntas_1": "👣",
-    "niveles_1": "🌟",
-    "preguntas_10": "🔍",
-    "niveles_3": "🧭",
-    "preguntas_20": "💪",
-    "niveles_5": "🏅",
+    "preguntas_1": "ðŸ‘£",
+    "niveles_1": "ðŸŒŸ",
+    "preguntas_10": "ðŸ”",
+    "niveles_3": "ðŸ§­",
+    "preguntas_20": "ðŸ’ª",
+    "niveles_5": "ðŸ…",
 }
 
 
@@ -72,7 +77,7 @@ def favicon():
 @app.route("/inicio-estudiante")
 def inicio_estudiante():
 
-    # Verificar que el estudiante haya iniciado sesión
+    # Verificar que el estudiante haya iniciado sesiÃ³n
     if "id_usuario" not in session:
         return redirect(url_for("auth.login"))
 
@@ -163,9 +168,9 @@ def inicio_estudiante():
             total_preguntas = resultado_total["total"] or 0
 
             # -----------------------------------------------------
-            # Buscar el intento más relevante del estudiante.
+            # Buscar el intento mÃ¡s relevante del estudiante.
             # Si existe uno completado, se usa ese; si no,
-            # el más reciente. (Así coincide con la regla de
+            # el mÃ¡s reciente. (AsÃ­ coincide con la regla de
             # desbloqueo de Backend/routes/pruebas.py)
             # -----------------------------------------------------
 
@@ -223,7 +228,7 @@ def inicio_estudiante():
             else:
                 porcentaje = 0
 
-            # Si terminó el nivel, aseguramos 100%
+            # Si terminÃ³ el nivel, aseguramos 100%
             if completado:
                 porcentaje = 100
 
@@ -237,14 +242,14 @@ def inicio_estudiante():
 
             else:
 
-                # El nivel 1 siempre está disponible
+                # El nivel 1 siempre estÃ¡ disponible
                 if numero_nivel == 1:
 
                     desbloqueado = True
 
                 else:
 
-                    # Revisar si el nivel anterior está completado
+                    # Revisar si el nivel anterior estÃ¡ completado
                     nivel_anterior = niveles.get(
                         numero_nivel - 1
                     )
@@ -262,7 +267,7 @@ def inicio_estudiante():
                     estado = "disponible"
 
             # -----------------------------------------------------
-            # Guardar información del nivel
+            # Guardar informaciÃ³n del nivel
             # -----------------------------------------------------
 
             niveles[numero_nivel] = {
@@ -345,8 +350,8 @@ def inicio_estudiante():
             "numero": NIVELES_PRUEBA + 1,
             "nombre": "Mi resultado",
             "descripcion": (
-                "¡Terminaste todas las pruebas! Entra para descubrir "
-                "las áreas que más se parecen a ti."
+                "Â¡Terminaste todas las pruebas! Entra para descubrir "
+                "las Ã¡reas que mÃ¡s se parecen a ti."
             ),
             "respondidas": 0,
             "total": 0,
@@ -359,8 +364,8 @@ def inicio_estudiante():
         aventura_completa = resultado_visto
 
         # ---------------------------------------------------------
-        # Misión actual: el primer nivel (del 1 al 5) que se puede
-        # jugar y todavía no está completado
+        # MisiÃ³n actual: el primer nivel (del 1 al 5) que se puede
+        # jugar y todavÃ­a no estÃ¡ completado
         # ---------------------------------------------------------
 
         mision = None
@@ -378,7 +383,7 @@ def inicio_estudiante():
         )
 
         # ---------------------------------------------------------
-        # 6. Logros: revisar cuáles cumple el estudiante
+        # 6. Logros: revisar cuÃ¡les cumple el estudiante
         #    y guardar los nuevos en estudiante_logro
         # ---------------------------------------------------------
 
@@ -439,7 +444,7 @@ def inicio_estudiante():
             logros.append({
                 "nombre": logro["nombre"],
                 "descripcion": logro["descripcion"],
-                "icono": ICONOS_LOGROS.get(logro["tipo"], "🏅"),
+                "icono": ICONOS_LOGROS.get(logro["tipo"], "ðŸ…"),
                 "desbloqueado": logro["id_logro"] in logros_ya_obtenidos
             })
 
@@ -448,7 +453,7 @@ def inicio_estudiante():
         )
 
         # ---------------------------------------------------------
-        # 7. Mostrar página del estudiante
+        # 7. Mostrar pÃ¡gina del estudiante
         # ---------------------------------------------------------
 
         return render_template(
