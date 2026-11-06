@@ -7,7 +7,17 @@ from flask import (
 )
 from werkzeug.security import generate_password_hash, check_password_hash
 from database import obtener_conexion
-from correo import validar_dominio_correo, enviar_correo_bienvenida
+from correo import (
+    validar_dominio_correo,
+    enviar_correo_bienvenida,
+    enviar_codigo_recuperacion
+)
+
+from recuperacion import (
+    generar_codigo_recuperacion,
+    guardar_codigo_recuperacion,
+    registrar_intento_fallido
+)
 
 auth = Blueprint("auth", __name__)
 
@@ -360,6 +370,102 @@ def logout():
     session.clear()
     return redirect(url_for("inicio"))
 
+# =========================================
+# SOLICITAR RECUPERACION DE CONTRASENA
+# =========================================
+
+@auth.route("/recuperar-contrasena", methods=["GET", "POST"])
+def recuperar_contrasena():
+
+    if request.method == "POST":
+
+        correo = request.form.get("correo", "").strip()
+
+        mensaje = (
+            "Si el correo pertenece a una cuenta activa, "
+            "recibirás instrucciones para recuperar tu contraseña."
+        )
+
+        if not correo or validar_correo(correo):
+            flash(mensaje)
+            return redirect(url_for("auth.recuperar_contrasena"))
+
+        conexion = None
+        cursor = None
+
+        try:
+            conexion = obtener_conexion()
+            cursor = conexion.cursor(dictionary=True)
+
+            cursor.execute(
+                """
+                SELECT id_usuario
+                FROM usuarios
+                WHERE correo = %s
+                AND estado = 1
+                AND rol = 'estudiante'
+                """,
+                (correo,)
+            )
+
+            usuario = cursor.fetchone()
+
+            if usuario:
+                codigo, codigo_hash = generar_codigo_recuperacion()
+
+                cursor.execute(
+                    """
+                    UPDATE recuperacion_contrasena
+                    SET usado = 1
+                    WHERE id_usuario = %s
+                    AND usado = 0
+                    """,
+                    (usuario["id_usuario"],)
+                )
+
+                conexion.commit()
+
+                id_recuperacion = guardar_codigo_recuperacion(
+                    usuario["id_usuario"],
+                    codigo_hash
+                )
+
+                if id_recuperacion:
+                    enviado = enviar_codigo_recuperacion(
+                        correo,
+                        codigo
+                    )
+
+                    if not enviado:
+                        cursor.execute(
+                            """
+                            UPDATE recuperacion_contrasena
+                            SET usado = 1
+                            WHERE id_recuperacion = %s
+                            """,
+                            (id_recuperacion,)
+                        )
+                        conexion.commit()
+
+            flash(mensaje)
+
+        except Exception as error:
+            if conexion:
+                conexion.rollback()
+
+            print(f"Error al solicitar recuperacion: {error}")
+            flash(mensaje)
+
+        finally:
+            if cursor:
+                cursor.close()
+
+            if conexion:
+                conexion.close()
+
+        return redirect(url_for("auth.recuperar_contrasena"))
+
+    return render_template("recuperar_contrasena.html")
 
 # =========================================
 # REVISAR QUE LA CUENTA SIGA ACTIVA
