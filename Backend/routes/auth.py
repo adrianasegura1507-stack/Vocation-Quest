@@ -379,7 +379,9 @@ def recuperar_contrasena():
 
     if request.method == "POST":
 
+        print("[RECUPERACION] Solicitud POST recibida.", flush=True)
         correo = request.form.get("correo", "").strip()
+        print("[RECUPERACION] Correo recibido en el formulario.", flush=True)
 
         mensaje = (
             "Si el correo pertenece a una cuenta activa, "
@@ -387,6 +389,7 @@ def recuperar_contrasena():
         )
 
         if not correo or validar_correo(correo):
+            print("[RECUPERACION] Correo vacio o formato invalido.", flush=True)
             flash(mensaje)
             return redirect(url_for("auth.recuperar_contrasena"))
 
@@ -395,6 +398,7 @@ def recuperar_contrasena():
 
         try:
             conexion = obtener_conexion()
+            print("[RECUPERACION] Conexion MySQL establecida.", flush=True)
             cursor = conexion.cursor(dictionary=True)
 
             cursor.execute(
@@ -409,6 +413,7 @@ def recuperar_contrasena():
             )
 
             usuario = cursor.fetchone()
+            print(f"[RECUPERACION] Usuario encontrado: {bool(usuario)}", flush=True)
 
             if usuario:
                 codigo, codigo_hash = generar_codigo_recuperacion()
@@ -429,14 +434,18 @@ def recuperar_contrasena():
                     usuario["id_usuario"],
                     codigo_hash
                 )
+                print(f"[RECUPERACION] ID guardado: {id_recuperacion}", flush=True)
 
                 if id_recuperacion:
+                    print("[RECUPERACION] Intentando enviar correo...", flush=True)
                     enviado = enviar_codigo_recuperacion(
                         correo,
                         codigo
                     )
+                    print(f"[RECUPERACION] Resultado del envio: {enviado}", flush=True)
 
                     if not enviado:
+                        print("[RECUPERACION] Envio fallido. Invalidando codigo.", flush=True)
                         cursor.execute(
                             """
                             UPDATE recuperacion_contrasena
@@ -446,6 +455,11 @@ def recuperar_contrasena():
                             (id_recuperacion,)
                         )
                         conexion.commit()
+                else:
+                    print("[RECUPERACION] No se pudo guardar el codigo en MySQL.", flush=True)
+
+            else:
+                print("[RECUPERACION] No se encontro una cuenta activa de estudiante.", flush=True)
 
             flash(mensaje)
 
@@ -453,7 +467,7 @@ def recuperar_contrasena():
             if conexion:
                 conexion.rollback()
 
-            print(f"Error al solicitar recuperacion: {error}")
+            print(f"[RECUPERACION] ERROR EN LA RUTA: {type(error).__name__}: {error}", flush=True)
             flash(mensaje)
 
         finally:
