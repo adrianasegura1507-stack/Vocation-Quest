@@ -16,3 +16,4 @@
 - Documenta la carga del certificado SSL de Aiven
 - Documenta la publicación del sitio y su URL
 - Documenta la creación del servicio MySQL en Aiven
+- Documenta la configuración de la conexión con Aiven
