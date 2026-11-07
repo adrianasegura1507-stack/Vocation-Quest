@@ -4,3 +4,4 @@
 - Documenta la selección de la rama may-despliegue
 - Documenta la configuración del entorno Python 3
 - Documenta el comando de instalación de dependencias
+- Documenta la configuración del comando de inicio Gunicorn
