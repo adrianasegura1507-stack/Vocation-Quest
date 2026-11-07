@@ -13,3 +13,4 @@
 - Documenta las variables DB_USER y DB_NAME
 - Documenta la configuración de DB_PASSWORD
 - Documenta la configuración de DB_SSL_CA
+- Documenta la carga del certificado SSL de Aiven
