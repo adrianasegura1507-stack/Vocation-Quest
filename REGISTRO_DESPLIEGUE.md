@@ -6,3 +6,4 @@
 - Documenta el comando de instalación de dependencias
 - Documenta la configuración del comando de inicio Gunicorn
 - Documenta la selección del plan gratuito de Render
+- Documenta la variable APP_ENV
