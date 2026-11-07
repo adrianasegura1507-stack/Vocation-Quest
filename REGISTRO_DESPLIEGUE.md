@@ -20,3 +20,4 @@
 - Documenta la disponibilidad del conector MySQL para Python
 - Documenta la conexión segura con la base de datos
 - Documenta la importación de las 20 tablas principales
+- Documenta la creación de la tabla de recuperación de contraseñas
