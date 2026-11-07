@@ -15,3 +15,4 @@
 - Documenta la configuración de DB_SSL_CA
 - Documenta la carga del certificado SSL de Aiven
 - Documenta la publicación del sitio y su URL
+- Documenta la creación del servicio MySQL en Aiven
