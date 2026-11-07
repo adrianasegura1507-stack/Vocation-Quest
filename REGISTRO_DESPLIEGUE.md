@@ -10,3 +10,4 @@
 - Documenta la configuración de SECRET_KEY
 - Documenta la configuración de DB_HOST
 - Documenta la configuración de DB_PORT
+- Documenta las variables DB_USER y DB_NAME
