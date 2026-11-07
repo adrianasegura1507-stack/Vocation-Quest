@@ -1,0 +1,1 @@
+- Documenta la creación del espacio de trabajo en Render
