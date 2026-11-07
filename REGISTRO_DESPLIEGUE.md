@@ -12,3 +12,4 @@
 - Documenta la configuración de DB_PORT
 - Documenta las variables DB_USER y DB_NAME
 - Documenta la configuración de DB_PASSWORD
+- Documenta la configuración de DB_SSL_CA
