@@ -5,3 +5,4 @@
 - Documenta la configuración del entorno Python 3
 - Documenta el comando de instalación de dependencias
 - Documenta la configuración del comando de inicio Gunicorn
+- Documenta la selección del plan gratuito de Render
