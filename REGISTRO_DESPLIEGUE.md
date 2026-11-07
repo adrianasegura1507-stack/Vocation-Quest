@@ -18,3 +18,4 @@
 - Documenta la creación del servicio MySQL en Aiven
 - Documenta la configuración de la conexión con Aiven
 - Documenta la disponibilidad del conector MySQL para Python
+- Documenta la conexión segura con la base de datos
