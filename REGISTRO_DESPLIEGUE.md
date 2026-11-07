@@ -19,3 +19,4 @@
 - Documenta la configuración de la conexión con Aiven
 - Documenta la disponibilidad del conector MySQL para Python
 - Documenta la conexión segura con la base de datos
+- Documenta la importación de las 20 tablas principales
