@@ -7,3 +7,4 @@
 - Documenta la configuración del comando de inicio Gunicorn
 - Documenta la selección del plan gratuito de Render
 - Documenta la variable APP_ENV
+- Documenta la configuración de SECRET_KEY
