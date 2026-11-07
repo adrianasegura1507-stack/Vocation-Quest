@@ -1,3 +1,4 @@
 - Documenta la creación del espacio de trabajo en Render
 - Documenta la creación del servicio web de Vocation Quest
 - Documenta la conexión con el repositorio de GitHub
+- Documenta la selección de la rama may-despliegue
