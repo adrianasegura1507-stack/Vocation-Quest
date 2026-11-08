@@ -1,0 +1,23 @@
+- Documenta la creación del espacio de trabajo en Render
+- Documenta la creación del servicio web de Vocation Quest
+- Documenta la conexión con el repositorio de GitHub
+- Documenta la selección de la rama may-despliegue
+- Documenta la configuración del entorno Python 3
+- Documenta el comando de instalación de dependencias
+- Documenta la configuración del comando de inicio Gunicorn
+- Documenta la selección del plan gratuito de Render
+- Documenta la variable APP_ENV
+- Documenta la configuración de SECRET_KEY
+- Documenta la configuración de DB_HOST
+- Documenta la configuración de DB_PORT
+- Documenta las variables DB_USER y DB_NAME
+- Documenta la configuración de DB_PASSWORD
+- Documenta la configuración de DB_SSL_CA
+- Documenta la carga del certificado SSL de Aiven
+- Documenta la publicación del sitio y su URL
+- Documenta la creación del servicio MySQL en Aiven
+- Documenta la configuración de la conexión con Aiven
+- Documenta la disponibilidad del conector MySQL para Python
+- Documenta la conexión segura con la base de datos
+- Documenta la importación de las 20 tablas principales
+- Documenta la creación de la tabla de recuperación de contraseñas
