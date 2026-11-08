@@ -31,12 +31,12 @@ app.register_blueprint(explorar)
 # lo elegimos segÃºn el campo "tipo" del logro.
 
 ICONOS_LOGROS = {
-    "preguntas_1": "ðŸ‘£",
-    "niveles_1": "ðŸŒŸ",
-    "preguntas_10": "ðŸ”",
-    "niveles_3": "ðŸ§­",
-    "preguntas_20": "ðŸ’ª",
-    "niveles_5": "ðŸ…",
+    "preguntas_1": "\U0001F463",  # 👣
+    "niveles_1": "\U0001F31F",    # 🌟
+    "preguntas_10": "\U0001F514", # 🔔
+    "niveles_3": "\U0001F9E9",    # 🧩
+    "preguntas_20": "\U0001F4AA", # 💪
+    "niveles_5": "\U0001F3C6",    # 🏆
 }
 
 
@@ -444,7 +444,7 @@ def inicio_estudiante():
             logros.append({
                 "nombre": logro["nombre"],
                 "descripcion": logro["descripcion"],
-                "icono": ICONOS_LOGROS.get(logro["tipo"], "ðŸ…"),
+                "icono": ICONOS_LOGROS.get(logro["tipo"], "\U0001F3C6"),
                 "desbloqueado": logro["id_logro"] in logros_ya_obtenidos
             })
 
